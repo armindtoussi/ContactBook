@@ -6,66 +6,60 @@ package ca.bc.northvan.armintoussi.contactbook.Models;
 
 public class Address {
 
-    private int     addrStreetNumber;
-    private int     addrAptNumber;
-    private String  addrStreetName;
+    private String  addrStreetAddress;
     private String  addrCity;
     private String  addrState;
     private String  addrCountry;
     private String  addrPostCode;
-    private boolean isApt;
 
-
-
-    public Address(final int addrStreetNumber,
-                   final int addrAptNumber,
-                   final String addrStreetName,
-                   final String addrCity,
-                   final String addrState,
-                   final String addrCountry,
-                   final String addrPostCode) {
-
-        this.isApt = true;
-        this.setAddrStreetNumber(addrStreetNumber);
-        this.setAddrAptNumber(addrAptNumber);
-        this.setAddrStreetName(addrStreetName);
-        this.setAddrCity(addrCity);
-        this.setAddrState(addrState);
-        this.setAddrCountry(addrCountry);
-        this.setAddrPostCode(addrPostCode);
+    private Address(Builder builder) {
+        this.addrStreetAddress = builder.addrStreetAddress;
+        this.addrCity          = builder.addrCity;
+        this.addrState         = builder.addrState;
+        this.addrCountry       = builder.addrCountry;
+        this.addrPostCode      = builder.addrPostCode;
     }
 
-    public Address(final int addrStreetNumber,
-                   final String addrStreetName,
-                   final String addrCity,
-                   final String addrState,
-                   final String addrCountry,
-                   final String addrPostCode) {
+    public static class Builder {
+        private String  addrStreetAddress;
+        private String  addrCity;
+        private String  addrState;
+        private String  addrCountry;
+        private String  addrPostCode;
 
-        this.isApt = false;
-        this.setAddrStreetNumber(addrStreetNumber);
-        this.setAddrStreetName(addrStreetName);
-        this.setAddrCity(addrCity);
-        this.setAddrState(addrState);
-        this.setAddrCountry(addrCountry);
-        this.setAddrPostCode(addrPostCode);
-    }
+        public Builder addrStreetAddress(final String addrStreetAddress) {
+            this.addrStreetAddress = addrStreetAddress;
+            return this;
+        }
 
-    public void setAddrStreetNumber(final int addrStreetNumber) {
-        if(addrStreetNumber > 0) {
-            this.addrStreetNumber = addrStreetNumber;
+        public Builder addrCity(final String addrCity) {
+            this.addrCity = addrCity;
+            return this;
+        }
+
+        public Builder addrState(final String addrState) {
+            this.addrState = addrState;
+            return this;
+        }
+
+        public Builder addrCountry(final String addrCountry) {
+            this.addrCountry = addrCountry;
+            return this;
+        }
+
+        public Builder addrPostCode(final String addrPostCode) {
+            this.addrPostCode = addrPostCode;
+            return this;
+        }
+
+        public Address build() {
+            return new Address(this);
         }
     }
 
-    public void setAddrAptNumber(final int addrAptNumber) {
-        if(addrAptNumber > 0) {
-            this.addrAptNumber = addrAptNumber;
-        }
-    }
-
-    public void setAddrStreetName(final String addrStreetName) {
+    public void setAddrStreetAddress(final String addrStreetName) {
         if(addrStreetName != null && addrStreetName.length() > 2) {
-            this.addrStreetName = addrStreetName;
+            this.addrStreetAddress = addrStreetName;
         }
     }
 
@@ -93,16 +87,8 @@ public class Address {
         }
     }
 
-    public int getAddrStreetNumber() {
-        return addrStreetNumber;
-    }
-
-    public int getAddrAptNumber() {
-        return addrAptNumber;
-    }
-
-    public String getAddrStreetName() {
-        return addrStreetName;
+    public String getAddrStreetAddress() {
+        return addrStreetAddress;
     }
 
     public String getAddrCity() {
@@ -122,14 +108,11 @@ public class Address {
     }
 
     public Object clone() {
-        Address aClone;
-        if(isApt) {
-            aClone = new Address(this.addrStreetNumber, this.addrAptNumber, this.addrStreetName,
-                                 this.addrCity, this.addrState, this.addrCountry, this.addrPostCode);
-        } else {
-            aClone = new Address(this.addrStreetNumber, this.addrStreetName,
-                                 this.addrCity, this.addrState, this.addrCountry, this.addrPostCode);
-        }
-        return aClone;
+        return new Builder().addrStreetAddress(this.addrStreetAddress)
+                              .addrCity(this.addrCity)
+                              .addrState(this.addrState)
+                              .addrCountry(this.addrCountry)
+                              .addrPostCode(this.addrPostCode)
+                              .build();
     }
 }

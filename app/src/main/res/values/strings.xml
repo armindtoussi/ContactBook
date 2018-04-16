@@ -1,9 +1,42 @@
 <resources>
     <string name="app_name">Contact Book</string>
 
+    <string name="no_camera_warn">Your phone does not have a camera, sorry.</string>
+
     <string name="add_contact_title">Add Contact</string>
 
     <string name="take_picture">Take Picture</string>
     <string name="choose_pic">Choose Picture</string>
+
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="first">First</string>
+    <string name="middle">Middle</string>
+    <string name="last">Last</string>
+    <string name="optional">Optional</string>
+
+    <string name="mobile">Mobile</string>
+    <string name="home">Home</string>
+    <string name="phone_mobile">Mobile Number</string>
+    <string name="phone_home">Home Number</string>
+
+    <string name="email">Email</string>
+
+    <string name="street_address">Street Address</string>
+    <string name="addy_line_one">Address Line 1</string>
+    <string name="addy_line_two">Address Line 2</string>
+    <string name="city">City</string>
+    <string name="postal_code">Post Code</string>
+    <string name="region">Region</string>
+    <string name="prov_state">State/prov</string>
+    <string name="country">Country</string>
+
+    <string name="add_contact">Add Contact</string>
+
+    <string name="name_error">Not empty and at least 2 characters</string>
+    <string name="phone_num_error">Must be between 10 and 12 characters</string>
+    <string name="email_error">Email must have @ symbol</string>
+
 
 </resources>

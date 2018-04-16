@@ -1,89 +1,105 @@
 package ca.bc.northvan.armintoussi.contactbook.Models;
 
 import android.media.Image;
+import android.net.Uri;
 
 /**
  * Created by armin2 on 3/25/2018.
  */
 
 public class Contact {
-    private static final int MIN_AREA_CODE = 99;
-    private static final int MAX_AREA_CODE = 1000;
-    private static final int MIN_PHONE_NO  = 999_999;
-    private static final int MAX_PHONE_NO  = 10_000_000;
 
-    private Image   image;
+    private Uri     image;
     private Person  person;
     private Address address;
-    private String  organization;
-    private String  relationship;
-    private int     homeAreaCode;
-    private int     homePhoneNumber;
-    private int     mobileAreaCode;
-    private int     mobilePhoneNumber;
+    private String  email;
+    private String  homePhoneNumber;
+    private String  mobilePhoneNumber;
 
 
-    public Contact(final Person person, final int mobileAreaCode, final int mobilePhoneNumber) {
-        this.setPerson(person);
-        this.setMobileAreaCode(mobileAreaCode);
-        this.setMobilePhoneNumber(mobilePhoneNumber);
+    private Contact(Builder builder) {
+        this.image = builder.image;
+        this.person = builder.person;
+        this.address = builder.address;
+        this.email = builder.email;
+        this.homePhoneNumber = builder.homePhoneNumber;
+        this.mobilePhoneNumber = builder.mobilePhoneNumber;
     }
 
-    public void setMobilePhoneNumber(final int mobilePhoneNumber) {
-        if(mobilePhoneNumber > MIN_PHONE_NO && mobilePhoneNumber < MAX_PHONE_NO) {
-            this.mobilePhoneNumber = mobilePhoneNumber;
+    public static class Builder {
+        private Uri     image;
+        private Person  person;
+        private Address address;
+        private String  email;
+        private String  homePhoneNumber;
+        private String  mobilePhoneNumber;
+
+        public Builder image(final Uri image) {
+            this.image = image;
+            return this;
         }
-    }
 
-    public void setHomePhoneNumber(final int homePhoneNumber) {
-        if(homePhoneNumber > MIN_PHONE_NO && homePhoneNumber < MAX_PHONE_NO) {
+        public Builder person(final Person person) {
+            this.person = person;
+            return this;
+        }
+
+        public Builder address(final Address address) {
+            this.address = address;
+            return this;
+        }
+
+        public Builder email(final String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder homePhoneNumber(final String homePhoneNumber) {
             this.homePhoneNumber = homePhoneNumber;
+            return this;
+        }
+
+        public Builder mobilePhoneNumber(final String mobilePhoneNumber) {
+            this.mobilePhoneNumber = mobilePhoneNumber;
+            return this;
+        }
+
+        public Contact build() {
+            return new Contact(this);
         }
     }
 
-    public void setMobileAreaCode(final int mobileAreaCode) {
-        if(mobileAreaCode > MIN_AREA_CODE && mobileAreaCode < MAX_AREA_CODE) {
-            this.mobileAreaCode = mobileAreaCode;
-        }
+    public void setMobilePhoneNumber(final String mobilePhoneNumber) {
+        this.mobilePhoneNumber = mobilePhoneNumber;
     }
 
-    public void setHomeAreaCode(final int homeAreaCode) {
-        if(homeAreaCode > MIN_AREA_CODE && homeAreaCode < MAX_AREA_CODE) {
-            this.homeAreaCode = homeAreaCode;
-        }
-    }
-
-    public void setRelationship(final String relationship) {
-        if(relationship != null) {
-            this.relationship = relationship;
-        }
-    }
-
-    public void setOrganization(final String organization) {
-        if(organization != null) {
-            this.organization = organization;
-        }
+    public void setHomePhoneNumber(final String homePhoneNumber) {
+        this.homePhoneNumber = homePhoneNumber;
     }
 
     public void setAddress(final Address address) {
-        if(address != null) {
-            this.address = address;
-        }
+        this.address = address;
+
     }
 
     public void setPerson(final Person person) {
-        if(person != null) {
-            this.person = person;
-        }
+        this.person = person;
+
     }
 
-    public void setImage(final Image image) {
-        if(image != null) {
-            this.image = image;
-        }
+    public void setImage(final Uri image) {
+        this.image = image;
     }
 
-    public Image getImage() {
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Uri getImage() {
         return image;
     }
 
@@ -95,27 +111,11 @@ public class Contact {
         return (Address) this.address.clone();
     }
 
-    public String getOrganization() {
-        return organization;
-    }
-
-    public String getRelationship() {
-        return relationship;
-    }
-
-    public int getHomeAreaCode() {
-        return homeAreaCode;
-    }
-
-    public int getHomePhoneNumber() {
+    public String getHomePhoneNumber() {
         return homePhoneNumber;
     }
 
-    public int getMobileAreaCode() {
-        return mobileAreaCode;
-    }
-
-    public int getMobilePhoneNumber() {
+    public String getMobilePhoneNumber() {
         return mobilePhoneNumber;
     }
 }

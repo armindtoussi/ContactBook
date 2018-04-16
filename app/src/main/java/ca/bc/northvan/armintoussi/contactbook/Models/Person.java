@@ -10,15 +10,36 @@ public class Person {
     private String middleName;
     private String lastName;
 
-    public Person(final String firstName, final String middleName, final String lastName) {
-        this.setFirstName(firstName);
-        this.setMiddleName(middleName);
-        this.setLastName(lastName);
+
+    private Person(Builder builder) {
+        this.firstName = builder.firstName;
+        this.middleName = builder.middleName;
+        this.lastName = builder.lastName;
     }
 
-    public Person(final String firstName, final String lastName) {
-        this.setFirstName(firstName);
-        this.setLastName(lastName);
+    public static class Builder {
+        private String firstName;
+        private String lastName;
+        private String middleName;
+
+        public Builder firstName(final String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder lastName(final String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder middleName(final String middleName) {
+            this.middleName = middleName;
+            return this;
+        }
+
+        public Person build() {
+            return new Person(this);
+        }
     }
 
     public String getFirstName() {
@@ -65,10 +86,13 @@ public class Person {
     public Object clone() {
         Person aClone;
         if(this.middleName != null) {
-            aClone = new Person(this.firstName, this.middleName, this.lastName);
+            aClone = new Builder().firstName(firstName).lastName(lastName).middleName(middleName).build();
         } else {
-            aClone = new Person(this.firstName, this.lastName);
+            aClone = new Builder().firstName(this.firstName).lastName(this.lastName).build();
         }
         return aClone;
     }
+
+
+
 }
