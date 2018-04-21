@@ -6,6 +6,7 @@ package ca.bc.northvan.armintoussi.contactbook.Models;
 
 public class Address {
 
+    private int     addrID;
     private String  addrStreetAddress;
     private String  addrCity;
     private String  addrState;

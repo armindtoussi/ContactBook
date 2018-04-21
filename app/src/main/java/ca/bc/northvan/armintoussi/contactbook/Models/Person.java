@@ -6,6 +6,7 @@ package ca.bc.northvan.armintoussi.contactbook.Models;
 
 public class Person {
 
+    private int    personID;
     private String firstName;
     private String middleName;
     private String lastName;

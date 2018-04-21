@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseHelper;
 import ca.bc.northvan.armintoussi.contactbook.R;
 
 public class HomeActivity extends AppCompatActivity {
@@ -16,12 +17,16 @@ public class HomeActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
 
+    ContactBookDatabaseHelper helper;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        helper = ContactBookDatabaseHelper.getInstance(getApplicationContext());
 
         getViewReferences();
         setBtnListeners();

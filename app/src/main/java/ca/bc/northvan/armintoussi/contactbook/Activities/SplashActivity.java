@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
+import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseHelper;
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override

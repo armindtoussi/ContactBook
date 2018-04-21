@@ -37,6 +37,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+        <provider
+            android:name="ca.bc.northvan.armintoussi.contactbook.Database.ContactContentProvider"
+            android:authorities="ca.bc.northvan.armintoussi.contactbook.contactDatabase"
+            android:enabled="true"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>

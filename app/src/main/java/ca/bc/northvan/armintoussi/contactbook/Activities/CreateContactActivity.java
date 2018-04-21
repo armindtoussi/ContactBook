@@ -3,6 +3,7 @@ package ca.bc.northvan.armintoussi.contactbook.Activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -22,6 +23,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseHelper;
+import ca.bc.northvan.armintoussi.contactbook.Database.ContactContentProvider;
 import ca.bc.northvan.armintoussi.contactbook.Models.Address;
 import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 import ca.bc.northvan.armintoussi.contactbook.Models.Person;
@@ -73,6 +76,13 @@ public class CreateContactActivity extends AppCompatActivity {
     private boolean hasMiddleName;
     private boolean hasHomePhone;
 
+    private ContactBookDatabaseHelper contactHelper;
+
+    /**
+     * onCreate run at the start of this intent.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +93,14 @@ public class CreateContactActivity extends AppCompatActivity {
 
         //call permissions after view inflated.
         getCameraAndStoragePermissions();
+
+        contactHelper = ContactBookDatabaseHelper.getInstance(getApplicationContext());
+
+        //TODO - remove this block of code it's testing.
+        SQLiteDatabase db;
+        db = contactHelper.getWritableDatabase();
+        Log.i(TAG, "nuM ENTRIES: " + contactHelper.getNumberOfContacts(db));
+        //todo - end of block of code to remove.
     }
 
     /**
@@ -107,6 +125,13 @@ public class CreateContactActivity extends AppCompatActivity {
         mAddContactBtn = findViewById(R.id.add_contact_btn);
     }
 
+    /**
+     * hands callbacks from intent calls with results expected.
+     *
+     * @param requestCode request code of the intent.
+     * @param resultCode the result of the intent.
+     * @param data the data shipped back by the intent.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CAMERA_CAPTURE && resultCode == RESULT_OK) {
@@ -215,7 +240,7 @@ public class CreateContactActivity extends AppCompatActivity {
     }
 
     /**
-     * Inserts the hypens into a phone number for
+     * Inserts the hyphens into a phone number for
      * consistent formatting.
      *
      * @param number the number to format.
@@ -308,7 +333,7 @@ public class CreateContactActivity extends AppCompatActivity {
         if(email != null) {
             cb.email(email);
         }
-        if(home != null) {
+        if(hasHomePhone) {
             cb.homePhoneNumber(checkPhoneNumberFormat(home.toCharArray()));
         }
         if(mobile != null) {
@@ -318,6 +343,26 @@ public class CreateContactActivity extends AppCompatActivity {
             cb.image(Uri.parse(mImagePath));
         }
         return cb.build();
+    }
+
+    /**
+     * Inserts a contact into the database.
+     *
+     * @param contact the contact to insert.
+     */
+    private void insertContact(final Contact contact) {
+        final SQLiteDatabase db;
+
+        db = contactHelper.getWritableDatabase();
+        db.beginTransaction();
+
+        try {
+            contactHelper.insertContact(db, contact);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        db.close();
     }
 
     /**
@@ -393,6 +438,9 @@ public class CreateContactActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Set the button listeners.
+     */
     private void btnListener() {
         mAddContactBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -412,8 +460,8 @@ public class CreateContactActivity extends AppCompatActivity {
                     Log.i(TAG, contact.getEmail());
                     Log.i(TAG, contact.getPerson().getFirstName());
                     Log.i(TAG, contact.getMobilePhoneNumber());
-                    Log.i(TAG, contact.getAddress().getAddrStreetAddress());
-                    Log.i(TAG, contact.getAddress().getAddrCountry());
+                    insertContact(contact);
+                    finish();
                 }
             }
         });
