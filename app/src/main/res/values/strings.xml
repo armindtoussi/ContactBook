@@ -38,5 +38,7 @@
     <string name="phone_num_error">Must be between 10 and 12 characters</string>
     <string name="email_error">Email must have @ symbol</string>
 
-
+    <!-- Temp Strings -->
+    <string name="whatever">Whatever</string>
+    <string name="something">Something</string>
 </resources>

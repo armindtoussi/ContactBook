@@ -2,7 +2,8 @@
 <resources>
     <dimen name="text_size">22sp</dimen>
 
-    <dimen name="card_main_text">28sp</dimen>
+    <dimen name="card_sub_text">16sp</dimen>
 
-    <dimen name="card_left_pad">20dp</dimen>
+    <dimen name="card_left_pad">26dp</dimen>
+    <dimen name="card_top_pad">5dp</dimen>
 </resources>
