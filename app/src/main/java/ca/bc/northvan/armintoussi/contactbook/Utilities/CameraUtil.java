@@ -14,17 +14,27 @@ import java.util.Date;
 
 /**
  * Created by armin2 on 4/14/2018.
+ * A Camera utility class to dispatch a Camera intent,
+ * create a file, save, and pass the uri back to caller.
+ *
  */
-
 public class CameraUtil {
+    /** Debug class tag. */
     private static final String TAG = "CameraUtil";
 
+    /** OnActivityResult request code. */
     private static final int REQUEST_CAMERA_CAPTURE = 1;
 
+    /** Calling activity. */
     private Activity mActivity;
-
+    /** The path where the image is located. */
     private String mImagePath;
 
+    /**
+     * ctor takes the calling activity and creates an obj of this.
+     *
+     * @param activity the calling activity.
+     */
     public CameraUtil(Activity activity) {
         this.mActivity = activity;
     }
@@ -77,6 +87,11 @@ public class CameraUtil {
         }
     }
 
+    /**
+     * Gets the image path.
+     *
+     * @return the image path as a String.
+     */
     public String getImagePath() {
         return mImagePath;
     }

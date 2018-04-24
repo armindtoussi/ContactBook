@@ -7,18 +7,31 @@ import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
 
 /**
  * Created by armin2 on 3/25/2018.
+ *
+ * This class represents a contact.
+ * Builder pattern is implemented to build
+ * a contact as well as ContactBuilder class
+ * for ease of repeatedly building a contact.
  */
-
 public class Contact {
-
+    /** Uri for the image. */
     private Uri     image;
+    /** Person obj that holds contact name. */
     private Person  person;
+    /** Address obj that holds the contact address. */
     private Address address;
+    /** String that holds contact email. */
     private String  email;
+    /** String that holds contact home phone. */
     private String  homePhoneNumber;
+    /** String that holds contact mobile phone. */
     private String  mobilePhoneNumber;
 
-
+    /**
+     * Private ctor that sets all the instance variables.
+     *
+     * @param builder builder obj used for building this obj.
+     */
     private Contact(Builder builder) {
         this.image = builder.image;
         this.person = builder.person;
@@ -28,95 +41,213 @@ public class Contact {
         this.mobilePhoneNumber = builder.mobilePhoneNumber;
     }
 
+    /**
+     * Static Builder class for easily building
+     * a contact with variable arguments.
+     */
     public static class Builder {
+        /** Uri for the image. */
         private Uri     image;
+        /** Person obj that holds contact name. */
         private Person  person;
+        /** Address obj that holds the contact address. */
         private Address address;
+        /** String that holds contact email. */
         private String  email;
+        /** String that holds contact home phone. */
         private String  homePhoneNumber;
+        /** String that holds contact mobile phone. */
         private String  mobilePhoneNumber;
 
+        /**
+         * Add the image.
+         *
+         * @param image the image uri to add to build.
+         *
+         * @return this obj to continue building.
+         */
         public Builder image(final Uri image) {
             this.image = image;
             return this;
         }
 
+        /**
+         * Add the person obj.
+         *
+         * @param person the person to add to build.
+         *
+         * @return this obj to continue building.
+         */
         public Builder person(final Person person) {
             this.person = person;
             return this;
         }
 
+        /**
+         * Add the Address obj.
+         *
+         * @param address the address to add to build.
+         *
+         * @return  this obj to continue building.
+         */
         public Builder address(final Address address) {
             this.address = address;
             return this;
         }
 
+        /**
+         * Add the email.
+         *
+         * @param email the email to add to build.
+         *
+         * @return this obj to continue building.
+         */
         public Builder email(final String email) {
             this.email = email;
             return this;
         }
 
+        /**
+         * Add the home phone.
+         *
+         * @param homePhoneNumber the home phone to add to build.
+         *
+         * @return this obj to continue building.
+         */
         public Builder homePhoneNumber(final String homePhoneNumber) {
             this.homePhoneNumber = homePhoneNumber;
             return this;
         }
 
+        /**
+         * Add the mobile phone.
+         *
+         * @param mobilePhoneNumber the mobile phone to add to build.
+         *
+         * @return this obj to continue building.
+         */
         public Builder mobilePhoneNumber(final String mobilePhoneNumber) {
             this.mobilePhoneNumber = mobilePhoneNumber;
             return this;
         }
 
+        /**
+         * Build method to finish the build and return a
+         * built Contact obj.
+         *
+         * @return built Contact obj.
+         */
         public Contact build() {
             return new Contact(this);
         }
     }
 
+    /**
+     * Sets the mobile phone no.
+     *
+     * @param mobilePhoneNumber mobile phone no as a string.
+     */
     public void setMobilePhoneNumber(final String mobilePhoneNumber) {
         this.mobilePhoneNumber = mobilePhoneNumber;
     }
 
+    /**
+     * Sets the home phone no.
+     *
+     * @param homePhoneNumber home phone no as a string.
+     */
     public void setHomePhoneNumber(final String homePhoneNumber) {
         this.homePhoneNumber = homePhoneNumber;
     }
 
+    /**
+     * Sets the Address obj.
+     *
+     * @param address the address to set as Address obj.
+     */
     public void setAddress(final Address address) {
         this.address = address;
 
     }
 
+    /**
+     * Sets the Person obj.
+     *
+     * @param person the person to set as Person obj.
+     */
     public void setPerson(final Person person) {
         this.person = person;
 
     }
 
+    /**
+     * Sets the image.
+     *
+     * @param image the image to set as a Uri.
+     */
     public void setImage(final Uri image) {
         this.image = image;
     }
 
+    /**
+     * Sets the email.
+     *
+     * @param email the email to set as a String.
+     */
     public void setEmail(final String email) {
         this.email = email;
     }
 
+    /**
+     * Gets the email.
+     *
+     * @return email as a String.
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Gets the Image.
+     *
+     * @return image as a Uri.
+     */
     public Uri getImage() {
         return image;
     }
 
+    /**
+     * Gets the person.
+     *
+     * @return a clone of the person as a Person obj.
+     */
     public Person getPerson() {
         return (Person) this.person.clone();
     }
 
+    /**
+     * Gets the address.
+     *
+     * @return a clone of the address as an Address obj.
+     */
     public Address getAddress() {
         return (Address) this.address.clone();
     }
 
+    /**
+     * Gets the home phone.
+     *
+     * @return the home phone as a String.
+     */
     public String getHomePhoneNumber() {
         return homePhoneNumber;
     }
 
+    /**
+     * Gets the mobile phone.
+     *
+     * @return the mobile phone as a String.
+     */
     public String getMobilePhoneNumber() {
         return mobilePhoneNumber;
     }

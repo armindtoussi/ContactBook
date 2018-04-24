@@ -6,22 +6,38 @@ import android.provider.BaseColumns;
 
 /**
  * Created by armin2 on 4/20/2018.
+ *
+ * The SQLite contract.
+ * Holds all the constants we need for the database and
+ * abstract static classes that represent each table and
+ * the constants required for each table.
+ *
  */
-
 public class ContactBookDatabaseContract {
-
+    /** Class debugg tag. */
     private static final String TAG = ContactBookDatabaseContract.class.getName();
 
-    public  static final int    SCHEMA_VERSION = 1;
-    public  static final String DATABASE_NAME  = "contactbook.db"; //contactbook.armintoussi.northvan.bc.ca.contactDatabase
-    public  static final String AUTHORITY      = "ca.bc.northvan.armintoussi.contactbook.contactDatabase";
-    public  static final String SCHEME         = "content://";
-    public  static final String SLASH          = "/";
-    private static final String TEXT_TYPE      = " TEXT";
-    private static final String NOT_NULL       = " NOT NULL";
-    private static final String COMMA_SEP      = ",";
+    /** The current db schema version no. */
+    public  static final int SCHEMA_VERSION = 1;
+    /** The database name. */
+    public  static final String DATABASE_NAME  = "contactbook.db";
+    /** The authority, present in the provider section of manifest. */
+    public  static final String AUTHORITY = "ca.bc.northvan.armintoussi.contactbook.contactDatabase";
+    /** Scheme of the uri. */
+    public  static final String SCHEME = "content://";
+    /** A front slash constant. */
+    public  static final String SLASH = "/";
+    /** SQL query constant for text type. */
+    private static final String TEXT_TYPE = " TEXT";
+    /** SQL query constant for not null. */
+    private static final String NOT_NULL = " NOT NULL";
+    /** A comma separator constant. */
+    private static final String COMMA_SEP = ",";
 
-    //private ctor so no instantiation occurs.
+    /**
+     * This is a non-instantiable class so we have
+     * a private ctor.
+     */
     private ContactBookDatabaseContract() { }
 
     /**

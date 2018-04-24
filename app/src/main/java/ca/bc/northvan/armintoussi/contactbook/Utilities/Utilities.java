@@ -2,8 +2,10 @@ package ca.bc.northvan.armintoussi.contactbook.Utilities;
 
 /**
  * Created by armin2 on 4/23/2018.
+ *
+ * A utilities class that holds functions
+ * for string checks and email checks etc.
  */
-
 public class Utilities {
 
     /**

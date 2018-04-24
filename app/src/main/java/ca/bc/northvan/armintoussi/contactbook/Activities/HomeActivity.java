@@ -24,28 +24,54 @@ import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 import ca.bc.northvan.armintoussi.contactbook.Models.Person;
 import ca.bc.northvan.armintoussi.contactbook.R;
 
+/**
+ * Created by armin2 on 4/18/2018.
+ *
+ * Main activity of the application. It holds the recycler view
+ * that displays all contacts.
+ */
 public class HomeActivity extends AppCompatActivity {
+    /** Debugging class tag. */
     private static final String TAG = HomeActivity.class.getName();
 
+    /** Email Column on person & contact table join. */
     private static final int EMAIL_COL  = 3;
+    /** Home phone Column on person & contact table join. */
     private static final int HOME_COL   = 4;
+    /** Mobile phone Column on person & contact table join. */
     private static final int MOBILE_COL = 4;
+    /** First name Column on person & contact table join. */
     private static final int F_NAME_COL = 7;
+    /** Last name Column on person & contact table join. */
     private static final int L_NAME_COL = 8;
+    /** Middle name Column on person & contact table join. */
     private static final int M_NAME_COL = 9;
 
+    /** Floating Action Button for adding contact. */
     private FloatingActionButton mFloatingAddContact;
 
+    /** Tool bar. */
     private Toolbar mToolbar;
 
+    /** Recycler view that holds the view holders/contacts. */
     private RecyclerView mContactRecycler;
+    /** Recycler adapter that populates the recycler. */
     private ContactRecyclerAdapter mRecyclerAdapter;
+    /** Layout manager that manages the recycler layout. */
     private RecyclerView.LayoutManager mRecyclerLayoutManager;
 
+    /** Database helper. TODO - check later if this is needed. */
     private ContactBookDatabaseHelper mHelper;
+    /** Content provider for accessing data. */
     private ContactContentProvider mProvider;
 
-    
+    /**
+     * onCreate method, initiates and inflates the view.
+     * Also handles some startup needs like adapters and
+     * getting references to views.
+     *
+     * @param savedInstanceState previous state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,5 +163,4 @@ public class HomeActivity extends AppCompatActivity {
         }
         return contacts;
     }
-
 }

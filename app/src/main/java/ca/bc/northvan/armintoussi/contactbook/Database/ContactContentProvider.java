@@ -10,8 +10,11 @@ import android.util.Log;
 
 /**
  * Created by armin2 on 4/20/2018.
+ *
+ * The content provider for accessing the sqlite
+ * database.
+ *
  */
-
 public class ContactContentProvider extends ContentProvider {
     /** Debug tag. */
     private static final String TAG = ContactContentProvider.class.getName();
@@ -31,7 +34,7 @@ public class ContactContentProvider extends ContentProvider {
     private ContactBookDatabaseHelper dbHelper;
 
 
-    //Add uri's to uri matcher.
+    /** Add the necessary Uri's to the matcher. */
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,

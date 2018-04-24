@@ -12,10 +12,15 @@ import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 
 /**
  * Created by armin2 on 4/20/2018.
+ *
+ * Database open helper for accessing the sqlite database
+ * in this app.
+ * The helper is accessed through the content provider
+ * in all cases ideally.
+ *
  */
-
 public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
-    /** Debug tag. */
+    /** Debug class tag. */
     private static final String TAG = ContactBookDatabaseHelper.class.getName();
     /** Instance of this helper. */
     private static ContactBookDatabaseHelper instance;

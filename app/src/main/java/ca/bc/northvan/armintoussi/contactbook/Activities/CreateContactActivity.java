@@ -30,58 +30,98 @@ import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 import ca.bc.northvan.armintoussi.contactbook.Models.Person;
 import ca.bc.northvan.armintoussi.contactbook.R;
 import ca.bc.northvan.armintoussi.contactbook.Utilities.CameraUtil;
+import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
 
-
+/**
+ * Created by armin2 on 4/18/2018.
+ *
+ * Activity for adding contacts to your list.
+ */
 public class CreateContactActivity extends AppCompatActivity {
+    /** Debugging class tag. */
     private static final String TAG = "CreateContactActivity";
 
+    /** On Activity Request intent code for camera capture. */
     private static final int REQUEST_CAMERA_CAPTURE        = 1;
+    /** On Activity Request intent code for camera write. */
     private static final int REQUEST_CAM_WRITE_PERMISSIONS = 2;
+    /** On Activity Request intent code for picking image. */
     private static final int REQUEST_PICK_IMAGE            = 3;
 
+    /** Fresco Drawee view for display selected image. */
     private SimpleDraweeView mImage;
 
+    /** Take picture button. */
     private ImageView mTakePicture;
+    /** Choose picture button. */
     private ImageView mChoosePicture;
 
+    /** The image path on phone, to be converted to uri. */
     private String mImagePath;
 
+    /** EditText for first name. */
     private EditText mFirst;
+    /** EditText for middle name. */
     private EditText mMiddle;
+    /** EditText for last name. */
     private EditText mLast;
+    /** EditText for mobile phone. */
     private EditText mMobilePhone;
+    /** EditText for home phone. */
     private EditText mHomePhone;
+    /** EditText for email. */
     private EditText mEmail;
+    /** EditText for address line 1. */
     private EditText mAddressOne;
+    /** EditText for address line 2. */
     private EditText mAddressTwo;
+    /** EditText for city. */
     private EditText mCity;
+    /** EditText for post code. */
     private EditText mPostCode;
+    /** EditText for region/state/province. */
     private EditText mRegion;
+    /** EditText for country. */
     private EditText mCountry;
 
+    /** Add contact button. */
     private Button mAddContactBtn;
 
+    /** String that holds first name. */
     private String first;
+    /** String that holds middle name. */
     private String middle;
+    /** String that holds last name. */
     private String last;
+    /** String that holds mobile phone. */
     private String mobile;
+    /** String that holds home phone. */
     private String home;
+    /** String that holds email address. */
     private String email;
+    /** String that holds street address. */
     private String address;
+    /** String that holds city. */
     private String city;
+    /** String that holds post code. */
     private String postCode;
+    /** String that holds region/state/prov. */
     private String region;
+    /** String that holds country. */
     private String country;
 
-    private boolean hasMiddleName;
+    /** Boolean for checking if user enter a home phone. */
     private boolean hasHomePhone;
 
+    /** todo - temp helper for inserting contacts. will be changed to a provider. */
     private ContactBookDatabaseHelper contactHelper;
 
     /**
-     * onCreate run at the start of this intent.
+     * onCreate method, initiates and inflates the view.
+     * Also handles some startup needs like permissions and
+     * getting references to views.
      *
-     * @param savedInstanceState
+     * @param savedInstanceState previous instance state.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,31 +208,27 @@ public class CreateContactActivity extends AppCompatActivity {
      * @return true if all tests pass.
      */
     private boolean validateContactInformation() {
-        if(!checkNotNullNotEmpty(first)) {
+        if(!Utilities.checkNotNullNotEmpty(first)) {
             mFirst.setError(getResources().getString(R.string.name_error));
             return false;
         }
 
-        if(checkNotNullNotEmpty(middle)) {
-            hasMiddleName = true;
-        }
-
-        if(!checkNotNullNotEmpty(last)) {
+        if(!Utilities.checkNotNullNotEmpty(last)) {
             mLast.setError(getResources().getString(R.string.name_error));
             return false;
         }
 
-        if(!checkNotNullNotEmpty(mobile)) {
+        if(!Utilities.checkNotNullNotEmpty(mobile)) {
             mMobilePhone.setError(getResources().getString(R.string.phone_num_error));
             return false;
         }
 
-        if(checkNotNullNotEmpty(home)) {
+        if(Utilities.checkNotNullNotEmpty(home)) {
             hasHomePhone = true;
         }
 
-        if(checkNotNullNotEmpty(email)) {
-            if(!checkEmailFormat(email.toCharArray())) {
+        if(Utilities.checkNotNullNotEmpty(email)) {
+            if(!Utilities.checkEmailFormat(email.toCharArray())) {
                 mEmail.setError(getResources().getString(R.string.email_error));
                 return false;
             }
@@ -206,72 +242,10 @@ public class CreateContactActivity extends AppCompatActivity {
      * @return true if not empty.
      */
     private boolean checkForAddress() {
-        if(!checkNotNullNotEmpty(address)) {
+        if(!Utilities.checkNotNullNotEmpty(address)) {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Checks that strings aren't null or empty.
-     *
-     * @param isNull arg to check.
-     * @return true if not null or not empty.
-     */
-    private boolean checkNotNullNotEmpty(String isNull) {
-        if(isNull == null || isNull.length() < 1) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Check that the phone number is formatted the way we want.
-     * formatting: ###-###-####
-     *
-     * @param number the number to format.
-     * @return constructed & built string.
-     */
-    private String checkPhoneNumberFormat(char[] number) {
-        if(number.length == 10) {
-            return this.insertPhoneHyphens(number);
-        }//otherwise it's 12 just return.
-        return number.toString();
-    }
-
-    /**
-     * Inserts the hyphens into a phone number for
-     * consistent formatting.
-     *
-     * @param number the number to format.
-     * @return constructed & formatted string.
-     */
-    private String insertPhoneHyphens(char[] number) {
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < number.length; i++) {
-            if(i == 2 || i == 5) {
-                sb.append(number[i]);
-                sb.append("-");
-            } else {
-                sb.append(number[i]);
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Checks if the email has an @ symbol.
-     *
-     * @param email the email to check.
-     * @return true if has @ symbol.
-     */
-    private boolean checkEmailFormat(char[] email) {
-        for(char c: email) {
-            if(c == '@') {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -313,10 +287,10 @@ public class CreateContactActivity extends AppCompatActivity {
             cb.email(email);
         }
         if(hasHomePhone) {
-            cb.homePhoneNumber(checkPhoneNumberFormat(home.toCharArray()));
+            cb.homePhoneNumber(Utilities.checkPhoneNumberFormat(home.toCharArray()));
         }
         if(mobile != null) {
-            cb.mobilePhoneNumber(checkPhoneNumberFormat(mobile.toCharArray()));
+            cb.mobilePhoneNumber(Utilities.checkPhoneNumberFormat(mobile.toCharArray()));
         }
         if(mImagePath != null) {
             cb.image(Uri.parse(mImagePath));
@@ -326,7 +300,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     /**
      * Inserts a contact into the database.
-     *
+     * todo-change this to use the provider rather than the helper.
      * @param contact the contact to insert.
      */
     private void insertContact(final Contact contact) {
@@ -399,11 +373,12 @@ public class CreateContactActivity extends AppCompatActivity {
                     Toast.makeText(CreateContactActivity.this,
                             getResources().getString(R.string.no_camera_warn),
                             Toast.LENGTH_SHORT).show();
-                } else {
+                } else { //todo - chage the entire way we're doing pics.
                     //take picture
                     CameraUtil cu = new CameraUtil(CreateContactActivity.this);
                     cu.dispatchTakePictureIntent();
                     mImagePath = cu.getImagePath();
+                    //todo - remove.
                     Log.i(TAG, "image path: " + mImagePath);
                 }
             }
@@ -435,7 +410,7 @@ public class CreateContactActivity extends AppCompatActivity {
                     }
 
                     Contact contact = createContact(address, person);
-                    //left in for now.
+                    //todo - remove - left in for now.
                     Log.i(TAG, contact.getEmail());
                     Log.i(TAG, contact.getPerson().getFirstName());
                     Log.i(TAG, contact.getMobilePhoneNumber());
