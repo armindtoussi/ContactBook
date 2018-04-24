@@ -1,5 +1,7 @@
 package ca.bc.northvan.armintoussi.contactbook.Models;
 
+import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
+
 /**
  * Created by armin2 on 3/25/2018.
  */
@@ -94,6 +96,26 @@ public class Person {
         return aClone;
     }
 
-
-
+    /**
+     * Person builder class, gives us a ability to statically call
+     * method for a person to be built.
+     */
+    public static final class PersonBuilder {
+        /**
+         * Creates a person using person builder.
+         *
+         * @param first first name of the person.
+         * @param last last name of the person.
+         * @param middle the middle name of the person (Can be null).
+         *
+         * @return a built person w/wo a middle name.
+         */
+        public static Person createPerson(final String first, final String last, final String middle) {
+            if(Utilities.checkNotNullNotEmpty(middle)) {
+                return new Person.Builder().firstName(first).lastName(last).middleName(middle).build();
+            } else {
+                return new Person.Builder().firstName(first).lastName(last).build();
+            }
+        }
+    }
 }

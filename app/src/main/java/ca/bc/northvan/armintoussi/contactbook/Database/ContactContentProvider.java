@@ -6,6 +6,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
 
 /**
  * Created by armin2 on 4/20/2018.
@@ -16,18 +17,18 @@ public class ContactContentProvider extends ContentProvider {
     private static final String TAG = ContactContentProvider.class.getName();
 
     /** Person URI code. */
-    private static final int PERSON_URI_CODE = 1;
+    public static final int PERSON_URI_CODE = 1;
     /** Address URI code. */
-    private static final int ADDRSS_URI_CODE = 2;
-    /** Contact URI code. */
-    private static final int CONTCT_URI_CODE = 3;
+    public static final int ADDRSS_URI_CODE = 2;
+    /** Contact URI code for getting all contacts. */
+    public static final int CONTCT_URI_CODE = 3;
 
     /** Uri Matcher for building the db uri's. */
     private static final UriMatcher uriMatcher;
 
 
     /** ContactBookDatabaseHelper instance. */
-    private ContactBookDatabaseHelper cbDbHelper;
+    private ContactBookDatabaseHelper dbHelper;
 
 
     //Add uri's to uri matcher.
@@ -46,8 +47,9 @@ public class ContactContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        cbDbHelper = ContactBookDatabaseHelper.getInstance(getContext());
-        return cbDbHelper != null;
+        Log.i(TAG, "onCreate() is being called");
+        dbHelper = ContactBookDatabaseHelper.getInstance(getContext());
+        return true;
     }
 
     /**
@@ -77,25 +79,45 @@ public class ContactContentProvider extends ContentProvider {
         return type;
     }
 
+    /**
+     * Queries the database based on a uri and
+     * returns a cursor with the requested data.
+     *
+     * @param uri the uri to match.
+     * @param projection list of columns to put in cursor.
+     * @param selection  a selection criteria to apply when filtering rows. (null == all rows).
+     * @param selectionArgs wild card selections.
+     * @param sortOrder  the order to srt the results.
+     *
+     * @return a cursor loaded with the data.
+     */
     @Override
     public Cursor query(final Uri uri, final String[] projection, final String selection,
                         final String[] selectionArgs, final String sortOrder) {
+        Log.i(TAG, "$#%#%#$%Querying hopefully@#$@#%#%");
         final Cursor cursor;
 
         switch(uriMatcher.match(uri)) {
             case PERSON_URI_CODE:
                 //TODO do stuff maybe.
+                cursor = null;
                 break;
             case ADDRSS_URI_CODE:
                 //Todo do stuff maybe.
+                cursor = null;
                 break;
             case CONTCT_URI_CODE:
-                //Todo do stuff maybe.
+                //Grab all contacts with persons.
+                final SQLiteDatabase db;
+
+                db     = dbHelper.getReadableDatabase();
+                cursor = dbHelper.getAllContactsWithPersons(this.getContext(), db);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
-        throw new UnsupportedOperationException("Query not fully implemented yet.");
+
+        return cursor;
     }
 
     /**

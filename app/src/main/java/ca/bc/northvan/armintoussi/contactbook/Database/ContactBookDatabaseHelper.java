@@ -2,6 +2,7 @@ package ca.bc.northvan.armintoussi.contactbook.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -157,5 +158,34 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
         numEntries = DatabaseUtils.queryNumEntries(db, ContactBookDatabaseContract.ContactTable.TABLE_NAME);
 
         return numEntries;
+    }
+
+    /**
+     * Gets all contacts from the contact Table
+     * but on
+     *
+     * @param context app context.
+     * @param db a database reference.
+     *
+     * @return cursor with results.
+     */
+    public Cursor getAllContactsWithPersons(final Context context, final SQLiteDatabase db) {
+        final Cursor cursor;
+
+        final String query =
+                  "SELECT * FROM " + ContactBookDatabaseContract.ContactTable.TABLE_NAME
+                + " INNER JOIN "   + ContactBookDatabaseContract.PersonTable.TABLE_NAME
+                + " ON "           + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
+                                   + ContactBookDatabaseContract.ContactTable.PERSON_ID + " = "
+                                   + ContactBookDatabaseContract.PersonTable.TABLE_NAME + "."
+                                   + ContactBookDatabaseContract.PersonTable._ID;
+
+        cursor = db.rawQuery(query, null);
+        Log.i(TAG, "context null? " + (context == null));
+
+        cursor.setNotificationUri(context.getContentResolver(),
+                ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI);
+
+        return cursor;
     }
 }

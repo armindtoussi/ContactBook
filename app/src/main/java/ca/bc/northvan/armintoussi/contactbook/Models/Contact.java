@@ -3,6 +3,8 @@ package ca.bc.northvan.armintoussi.contactbook.Models;
 import android.media.Image;
 import android.net.Uri;
 
+import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
+
 /**
  * Created by armin2 on 3/25/2018.
  */
@@ -117,5 +119,49 @@ public class Contact {
 
     public String getMobilePhoneNumber() {
         return mobilePhoneNumber;
+    }
+
+    /**
+     * Contact builder class, gives us a ability to statically call
+     * method for a Contact to be built.
+     */
+    public static final class ContactBuilder {
+
+        /**
+         * Creates a contact using the Contact Builder.
+         *
+         * @param address contact's street address.
+         * @param person  contact's name.
+         * @param email   contact's email.
+         * @param homePhone contact's home phone #.
+         * @param mobilePhone contact's mobile phone #.
+         *
+         * @return a built Contact.
+         */
+        public static Contact createContact(final Address address,
+                                            final Person person,
+                                            final String email,
+                                            final String homePhone,
+                                            final String mobilePhone) {
+            Contact.Builder cb = new Contact.Builder();
+
+            if (address != null) {
+                cb.address(address);
+            }
+            if (person != null) {
+                cb.person(person);
+            }
+            if (Utilities.checkNotNullNotEmpty(email)) {
+                cb.email(email);
+            }
+            if(Utilities.checkNotNullNotEmpty(homePhone)) {
+                cb.homePhoneNumber(homePhone);
+            }
+            if(Utilities.checkNotNullNotEmpty(mobilePhone)) {
+                cb.mobilePhoneNumber(mobilePhone);
+            }
+
+            return cb.build();
+        }
     }
 }

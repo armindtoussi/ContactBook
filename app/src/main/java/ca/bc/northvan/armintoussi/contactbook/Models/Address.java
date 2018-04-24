@@ -1,5 +1,7 @@
 package ca.bc.northvan.armintoussi.contactbook.Models;
 
+import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
+
 /**
  * Created by armin2 on 3/25/2018.
  */
@@ -115,5 +117,48 @@ public class Address {
                               .addrCountry(this.addrCountry)
                               .addrPostCode(this.addrPostCode)
                               .build();
+    }
+
+    /**
+     * Address builder class, gives us a ability to statically call
+     * method for a address to be built.
+     */
+    public static final class AddressBuilder {
+
+        /**
+         * Creates an address using the Address Builder.
+         *
+         * @param stAddress the street address.
+         * @param city the city.
+         * @param region the state/province or region.
+         * @param country the country.
+         * @param postCode the postal code.
+         *
+         * @return a built address.
+         */
+        public static Address createAddress(final String stAddress,
+                                            final String city,
+                                            final String region,
+                                            final String country,
+                                            final String postCode) {
+            Address.Builder ab = new Address.Builder();
+
+            if (Utilities.checkNotNullNotEmpty(stAddress)) {
+                ab.addrStreetAddress(stAddress);
+            }
+            if (Utilities.checkNotNullNotEmpty(city)) {
+                ab.addrCity(city);
+            }
+            if (Utilities.checkNotNullNotEmpty(region)) {
+                ab.addrState(region);
+            }
+            if(Utilities.checkNotNullNotEmpty(country)) {
+                ab.addrCountry(country);
+            }
+            if(Utilities.checkNotNullNotEmpty(postCode)) {
+                ab.addrPostCode(postCode);
+            }
+            return ab.build();
+        }
     }
 }

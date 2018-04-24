@@ -187,7 +187,7 @@ public class CreateContactActivity extends AppCompatActivity {
             return false;
         }
 
-        if(!checkNotNullNotEmpty(home)) {
+        if(checkNotNullNotEmpty(home)) {
             hasHomePhone = true;
         }
 
@@ -280,11 +280,7 @@ public class CreateContactActivity extends AppCompatActivity {
      * @return a contructed person w/wo middle name.
      */
     private Person createPerson() {
-        if(hasMiddleName) {
-            return new Person.Builder().firstName(first).lastName(last).middleName(middle).build();
-        } else {
-            return new Person.Builder().firstName(first).lastName(last).build();
-        }
+        return Person.PersonBuilder.createPerson(first, last, middle);
     }
 
     /**
@@ -293,24 +289,7 @@ public class CreateContactActivity extends AppCompatActivity {
      * @return a build Address obj.
      */
     private Address createAddress() {
-        Address.Builder pb = new Address.Builder();
-
-        if(checkNotNullNotEmpty(address)) {
-            pb.addrStreetAddress(address);
-        }
-        if(checkNotNullNotEmpty(city)) {
-            pb.addrCity(city);
-        }
-        if(checkNotNullNotEmpty(region)) {
-            pb.addrState(region);
-        }
-        if(checkNotNullNotEmpty(country)) {
-            pb.addrCountry(country);
-        }
-        if(checkNotNullNotEmpty(postCode)) {
-            pb.addrPostCode(postCode);
-        }
-        return pb.build();
+        return Address.AddressBuilder.createAddress(address, city, region, country, postCode);
     }
 
     /**
@@ -460,6 +439,7 @@ public class CreateContactActivity extends AppCompatActivity {
                     Log.i(TAG, contact.getEmail());
                     Log.i(TAG, contact.getPerson().getFirstName());
                     Log.i(TAG, contact.getMobilePhoneNumber());
+                    Log.i(TAG, contact.getHomePhoneNumber());
                     insertContact(contact);
                     finish();
                 }
