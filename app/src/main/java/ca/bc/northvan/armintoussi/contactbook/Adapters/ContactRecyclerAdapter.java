@@ -1,6 +1,9 @@
 package ca.bc.northvan.armintoussi.contactbook.Adapters;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ca.bc.northvan.armintoussi.contactbook.Activities.HomeActivity;
 import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 import ca.bc.northvan.armintoussi.contactbook.R;
 
@@ -18,16 +22,22 @@ import ca.bc.northvan.armintoussi.contactbook.R;
  * Populates the view holders and adds them to the recycler view.
  */
 public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecyclerAdapter.ContactHolder> {
-    /** Arraylist of contacts. */
-    private ArrayList<Contact> mContacts;
+    /** Debug class tag. */
+    private static final String TAG = ContactRecyclerAdapter.class.getName();
 
+//    /** Arraylist of contacts. */
+//    private ArrayList<Contact> mContacts;
+    private Cursor mCursor;
+    private Context mContext;
     /**
      * Constructs an instance of our adapter.
      *
-     * @param contacts arraylist of contact objs.
+     * @param context the context
+     * @param cursor the current cursor.
      */
-    public ContactRecyclerAdapter(ArrayList<Contact> contacts) {
-        mContacts = contacts;
+    public ContactRecyclerAdapter(Context context, Cursor cursor) {
+        mContext = context;
+        mCursor   = cursor;
     }
 
     /**
@@ -56,12 +66,28 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
      */
     @Override
     public void onBindViewHolder(ContactHolder holder, int position) {
-        final String name = mContacts.get(position).getPerson().getFirstName() + " "
-                          + mContacts.get(position).getPerson().getLastName();
-        final String num  = mContacts.get(position).getMobilePhoneNumber();
+        mCursor.moveToPosition(position);
+        final String name = mCursor.getString(HomeActivity.F_NAME_COL) + " "
+                          + mCursor.getString(HomeActivity.L_NAME_COL);
+        final String num  = mCursor.getString(HomeActivity.MOBILE_COL);
 
         holder.mNameText.setText(name);
         holder.mNumText.setText(num);
+    }
+
+    public Cursor swapCursor(Cursor cursor) {
+        if(mCursor == cursor) {
+            Log.i(TAG, "this is not a new cursor");
+            return null;
+        }
+
+        Cursor oldCursor = mCursor;
+        this.mCursor = cursor;
+        if(cursor != null) {
+            Log.i(TAG, "Trying to notify the dataset changed");
+            this.notifyDataSetChanged();
+        }
+        return oldCursor;
     }
 
     /**
@@ -71,7 +97,8 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
      */
     @Override
     public int getItemCount() {
-        return mContacts.size();
+        //todo maybe change this return.
+        return (mCursor == null) ? 0 : mCursor.getCount();
     }
 
     /**

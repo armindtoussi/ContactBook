@@ -16,7 +16,7 @@ import android.util.Log;
  *
  */
 public class ContactContentProvider extends ContentProvider {
-    /** Debug tag. */
+    /** Debug class tag. */
     private static final String TAG = ContactContentProvider.class.getName();
 
     /** Person URI code. */
@@ -25,10 +25,11 @@ public class ContactContentProvider extends ContentProvider {
     public static final int ADDRSS_URI_CODE = 2;
     /** Contact URI code for getting all contacts. */
     public static final int CONTCT_URI_CODE = 3;
+    /** Contact URI code for getting a single contact. */
+    public static final int INDIVIDUAL_CONTACT_CODE = 4;
 
     /** Uri Matcher for building the db uri's. */
     private static final UriMatcher uriMatcher;
-
 
     /** ContactBookDatabaseHelper instance. */
     private ContactBookDatabaseHelper dbHelper;
@@ -46,6 +47,9 @@ public class ContactContentProvider extends ContentProvider {
         uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
                           ContactBookDatabaseContract.ContactTable.TABLE_NAME,
                           CONTCT_URI_CODE);
+        uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
+                          ContactBookDatabaseContract.ContactTable.TABLE_NAME + "/#",
+                          INDIVIDUAL_CONTACT_CODE);
     }
 
     @Override
@@ -75,6 +79,9 @@ public class ContactContentProvider extends ContentProvider {
                 break;
             case CONTCT_URI_CODE:
                 type = ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_TYPE;
+                break;
+            case INDIVIDUAL_CONTACT_CODE:
+                type = ContactBookDatabaseContract.ContactTable.CONTACT_ITEM_TYPE;
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported Uri: " + uri);
@@ -165,7 +172,12 @@ public class ContactContentProvider extends ContentProvider {
      */
     @Override
     public Uri insert(final Uri uri, final ContentValues values) {
-        //Todo - implement later if needed.
-        throw new UnsupportedOperationException("Insert not yet implemented");
+//        if(uriMatcher.match(uri) != INDIVIDUAL_CONTACT_CODE) {
+            throw new IllegalArgumentException("Unsupported URI for insertion: " + uri);
+//        }
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        if(uriMatcher.match(uri) == INDIVIDUAL_CONTACT_CODE) {
+//            long id = db.insert(ContactBookDatabaseContract.PersonTable)
+//        }
     }
 }

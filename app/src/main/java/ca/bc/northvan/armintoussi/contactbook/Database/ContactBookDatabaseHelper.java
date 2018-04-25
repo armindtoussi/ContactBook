@@ -186,7 +186,6 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
                                    + ContactBookDatabaseContract.PersonTable._ID;
 
         cursor = db.rawQuery(query, null);
-        Log.i(TAG, "context null? " + (context == null));
 
         cursor.setNotificationUri(context.getContentResolver(),
                 ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI);

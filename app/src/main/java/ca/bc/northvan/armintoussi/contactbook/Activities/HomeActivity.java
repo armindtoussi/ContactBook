@@ -1,17 +1,18 @@
 package ca.bc.northvan.armintoussi.contactbook.Activities;
 
+import android.app.LoaderManager;
 import android.content.ContentResolver;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -29,23 +30,24 @@ import ca.bc.northvan.armintoussi.contactbook.R;
  *
  * Main activity of the application. It holds the recycler view
  * that displays all contacts.
+ *
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     /** Debugging class tag. */
     private static final String TAG = HomeActivity.class.getName();
 
     /** Email Column on person & contact table join. */
-    private static final int EMAIL_COL  = 3;
+    public static final int EMAIL_COL  = 3;
     /** Home phone Column on person & contact table join. */
-    private static final int HOME_COL   = 4;
+    public static final int HOME_COL   = 4;
     /** Mobile phone Column on person & contact table join. */
-    private static final int MOBILE_COL = 4;
+    public static final int MOBILE_COL = 4;
     /** First name Column on person & contact table join. */
-    private static final int F_NAME_COL = 7;
+    public static final int F_NAME_COL = 7;
     /** Last name Column on person & contact table join. */
-    private static final int L_NAME_COL = 8;
+    public static final int M_NAME_COL = 8;
     /** Middle name Column on person & contact table join. */
-    private static final int M_NAME_COL = 9;
+    public static final int L_NAME_COL = 9;
 
     /** Floating Action Button for adding contact. */
     private FloatingActionButton mFloatingAddContact;
@@ -65,6 +67,8 @@ public class HomeActivity extends AppCompatActivity {
     /** Content provider for accessing data. */
     private ContactContentProvider mProvider;
 
+    private LoaderManager mManager;
+
     /**
      * onCreate method, initiates and inflates the view.
      * Also handles some startup needs like adapters and
@@ -76,22 +80,21 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        //todo - remove later.
         mHelper = ContactBookDatabaseHelper.getInstance(getApplicationContext());
 
         getViewReferences();
         setBtnListeners();
         setSupportActionBar(mToolbar);
 
-        ArrayList<Contact> contacts = getAllContactsWithPersons();
-
         mContactRecycler.setHasFixedSize(true);
-
         mRecyclerLayoutManager = new LinearLayoutManager(this);
         mContactRecycler.setLayoutManager(mRecyclerLayoutManager);
 
-        mRecyclerAdapter = new ContactRecyclerAdapter(contacts);
+        mRecyclerAdapter = new ContactRecyclerAdapter(this, null);
         mContactRecycler.setAdapter(mRecyclerAdapter);
+
+        getLoaderManager().initLoader(0, null, this);
     }
 
     /**
@@ -162,5 +165,27 @@ public class HomeActivity extends AppCompatActivity {
             cursor.close();
         }
         return contacts;
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        final CursorLoader loader;
+        final Uri uri;
+
+        uri    = ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI;
+        loader = new CursorLoader(HomeActivity.this, uri, null, null, null,
+                ContactBookDatabaseContract.PersonTable.F_NAME + " ASC");
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mRecyclerAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mRecyclerAdapter.swapCursor(null);
     }
 }

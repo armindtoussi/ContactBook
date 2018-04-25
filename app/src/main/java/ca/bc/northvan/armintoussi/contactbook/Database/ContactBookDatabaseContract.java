@@ -33,6 +33,8 @@ public class ContactBookDatabaseContract {
     private static final String NOT_NULL = " NOT NULL";
     /** A comma separator constant. */
     private static final String COMMA_SEP = ",";
+    private static final String MIME_TRPE_PREFIX = "/vnd.";
+
 
     /**
      * This is a non-instantiable class so we have
@@ -56,7 +58,7 @@ public class ContactBookDatabaseContract {
 
         /**The MIME type of Person Uri. */
         public static final String PERSON_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-                                                         "/vnd." + AUTHORITY + "." + TABLE_NAME;
+                                                         MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
 
         /**Person Table creation query. */
         public static final String CREATE_PERSON_TABLE = "CREATE TABLE IF NOT EXISTS " +
@@ -86,7 +88,7 @@ public class ContactBookDatabaseContract {
         public static final Uri ADDRESS_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME);
         /**The MIME type of Person Uri. */
         public static final String ADDRESS_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-                                                          "/vnd." + AUTHORITY + "." + TABLE_NAME;
+                                                          MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
 
         /**Address Table creation query. */
         public static final String CREATE_ADDRESS_TABLE = "CREATE TABLE IF NOT EXISTS " +
@@ -118,9 +120,13 @@ public class ContactBookDatabaseContract {
 
         /** Content Uri for the Contact table. */
         public static final Uri CONTACT_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME);
+        public static final Uri CONTACT_ITEM_URI    = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME + "/#");
         /**The MIME type of Contact Uri. */
         public static final String CONTACT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-                                                          "/vnd." + AUTHORITY + "." + TABLE_NAME;
+                                                          MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
+        public static final String CONTACT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
+                                                       MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
+
 
         /**Contact Table creation query. */
         public static final String CREATE_CONTACT_TABLE = "CREATE TABLE IF NOT EXISTS " +
