@@ -1,9 +1,11 @@
 package ca.bc.northvan.armintoussi.contactbook.Database;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
@@ -27,6 +29,7 @@ public class ContactContentProvider extends ContentProvider {
     public static final int CONTCT_URI_CODE = 3;
     /** Contact URI code for getting a single contact. */
     public static final int INDIVIDUAL_CONTACT_CODE = 4;
+    public static final int INDIVIDUAL_PERSON_CODE  = 5;
 
     /** Uri Matcher for building the db uri's. */
     private static final UriMatcher uriMatcher;
@@ -47,9 +50,6 @@ public class ContactContentProvider extends ContentProvider {
         uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
                           ContactBookDatabaseContract.ContactTable.TABLE_NAME,
                           CONTCT_URI_CODE);
-        uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
-                          ContactBookDatabaseContract.ContactTable.TABLE_NAME + "/#",
-                          INDIVIDUAL_CONTACT_CODE);
     }
 
     @Override
@@ -80,9 +80,6 @@ public class ContactContentProvider extends ContentProvider {
             case CONTCT_URI_CODE:
                 type = ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_TYPE;
                 break;
-            case INDIVIDUAL_CONTACT_CODE:
-                type = ContactBookDatabaseContract.ContactTable.CONTACT_ITEM_TYPE;
-                break;
             default:
                 throw new IllegalArgumentException("Unsupported Uri: " + uri);
         }
@@ -106,7 +103,7 @@ public class ContactContentProvider extends ContentProvider {
                         final String[] selectionArgs, final String sortOrder) {
         Log.i(TAG, "$#%#%#$%Querying hopefully@#$@#%#%");
         final Cursor cursor;
-
+        //todo- maybe change this to sqlbuilder method of doing query.
         switch(uriMatcher.match(uri)) {
             case PERSON_URI_CODE:
                 //TODO do stuff maybe.
@@ -172,12 +169,47 @@ public class ContactContentProvider extends ContentProvider {
      */
     @Override
     public Uri insert(final Uri uri, final ContentValues values) {
-//        if(uriMatcher.match(uri) != INDIVIDUAL_CONTACT_CODE) {
-            throw new IllegalArgumentException("Unsupported URI for insertion: " + uri);
-//        }
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        if(uriMatcher.match(uri) == INDIVIDUAL_CONTACT_CODE) {
-//            long id = db.insert(ContactBookDatabaseContract.PersonTable)
-//        }
+        if(dbHelper == null) {
+            dbHelper = ContactBookDatabaseHelper.getInstance(getContext());
+        }
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long id;
+
+        switch(uriMatcher.match(uri)) {
+            case CONTCT_URI_CODE:
+                id = db.insert(ContactBookDatabaseContract.ContactTable.TABLE_NAME,
+                        null, values);
+                return getUriForId(id, uri);
+            case PERSON_URI_CODE:
+                id = db.insert(ContactBookDatabaseContract.PersonTable.TABLE_NAME,
+                        null, values);
+                return getUriForId(id, uri);
+            case ADDRSS_URI_CODE:
+                id = db.insert(ContactBookDatabaseContract.AddressTable.TABLE_NAME,
+                        null, values);
+                return getUriForId(id, uri);
+            default:
+                throw new IllegalArgumentException("Unsupported URI for insertion: " + uri);
+        }
+    }
+
+    /**
+     * Gets the uri of an individual element.
+     *
+     * @param id the id of the entry.
+     * @param uri the uri of the table.
+     *
+     * @return the new uri of the individual element.
+     *
+     * @throws SQLException if the id is a fail code.
+     */
+    private Uri getUriForId(final long id, final Uri uri) throws SQLException {
+        if (id > 0) {
+            Uri itemUri = ContentUris.withAppendedId(uri, id);
+            //getContext().getContentResolver().notifyChange(itemUri, null);
+            return itemUri;
+        }
+        throw new SQLException("Problem while inserting into uri: " + uri);
     }
 }

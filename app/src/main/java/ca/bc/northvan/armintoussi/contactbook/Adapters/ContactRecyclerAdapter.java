@@ -25,8 +25,6 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
     /** Debug class tag. */
     private static final String TAG = ContactRecyclerAdapter.class.getName();
 
-//    /** Arraylist of contacts. */
-//    private ArrayList<Contact> mContacts;
     private Cursor mCursor;
     private Context mContext;
     /**

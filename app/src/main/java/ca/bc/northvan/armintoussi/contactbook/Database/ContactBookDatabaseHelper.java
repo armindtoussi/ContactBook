@@ -94,68 +94,6 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    /**
-     * Inserts a contact into the database, including person and address entities.
-     *
-     * @param db an instance of the db.
-     * @param contact the Contact object to insert.
-     */
-    public long insertContact(final SQLiteDatabase db, final Contact contact) {
-        final ContentValues contactContentValues = new ContentValues();
-        Log.i(TAG, "INSERT contact.");
-        //insert foreign entities first.
-        long personID  = insertPerson(db, contact);
-        long addressID = insertAddress(db, contact);
-        //set Contact table stuffs.
-        contactContentValues.put(ContactBookDatabaseContract.ContactTable.PERSON_ID, personID);
-        contactContentValues.put(ContactBookDatabaseContract.ContactTable.ADDRESS_ID, addressID);
-        contactContentValues.put(ContactBookDatabaseContract.ContactTable.EMAIL, contact.getEmail());
-        contactContentValues.put(ContactBookDatabaseContract.ContactTable.MOBILE_PHONE, contact.getMobilePhoneNumber());
-        contactContentValues.put(ContactBookDatabaseContract.ContactTable.HOME_PHONE, contact.getHomePhoneNumber());
-        //insert contact to db.
-        return db.insert(ContactBookDatabaseContract.ContactTable.TABLE_NAME, null, contactContentValues);
-    }
-
-    /**
-     * inserts a person into the database.
-     *
-     * @param db an instance of the database.
-     * @param contact the Contact containing the Person to insert.
-     *
-     * @return the id of the person inserted.
-     */
-    private long insertPerson(final SQLiteDatabase db, final Contact contact) {
-        final ContentValues personContentValues  = new ContentValues();
-        Log.i(TAG, "INSERT person.");
-        //set person table stuffs.
-        personContentValues.put(ContactBookDatabaseContract.PersonTable.F_NAME, contact.getPerson().getFirstName());
-        personContentValues.put(ContactBookDatabaseContract.PersonTable.M_NAME, contact.getPerson().getMiddleName());
-        personContentValues.put(ContactBookDatabaseContract.PersonTable.L_NAME, contact.getPerson().getLastName());
-        //insert person table stuffs.
-        return db.insert(ContactBookDatabaseContract.PersonTable.TABLE_NAME, null, personContentValues);
-    }
-
-    /**
-     * inserts an address into the database.
-     *
-     * @param db an instance of the database.
-     * @param contact the contact containing the Address to insert.
-     *
-     * @return the id of the address inserted.
-     */
-    private long insertAddress(final SQLiteDatabase db, final Contact contact) {
-        final ContentValues addressContentValues = new ContentValues();
-        Log.i(TAG, "INSERT ADDY.");
-        //set address table stuffs
-        addressContentValues.put(ContactBookDatabaseContract.AddressTable.STREET_ADDR, contact.getAddress().getAddrStreetAddress());
-        addressContentValues.put(ContactBookDatabaseContract.AddressTable.CITY_ADDR, contact.getAddress().getAddrCity());
-        addressContentValues.put(ContactBookDatabaseContract.AddressTable.STATE_ADDR, contact.getAddress().getAddrState());
-        addressContentValues.put(ContactBookDatabaseContract.AddressTable.COUNTRY_ADDR, contact.getAddress().getAddrCountry());
-        addressContentValues.put(ContactBookDatabaseContract.AddressTable.POST_ADDR, contact.getAddress().getAddrPostCode());
-        //Insert address table stuffs.
-        return db.insert(ContactBookDatabaseContract.AddressTable.TABLE_NAME, null, addressContentValues);
-    }
-
     //TODO delete this code, it's just there to check that entries are actually being put in to the database.
     public long getNumberOfContacts(final SQLiteDatabase db) {
         final long numEntries;

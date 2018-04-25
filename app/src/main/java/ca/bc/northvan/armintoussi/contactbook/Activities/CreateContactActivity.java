@@ -1,8 +1,10 @@
 package ca.bc.northvan.armintoussi.contactbook.Activities;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +25,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract;
 import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseHelper;
 import ca.bc.northvan.armintoussi.contactbook.Database.ContactContentProvider;
 import ca.bc.northvan.armintoussi.contactbook.Models.Address;
@@ -31,6 +34,8 @@ import ca.bc.northvan.armintoussi.contactbook.Models.Person;
 import ca.bc.northvan.armintoussi.contactbook.R;
 import ca.bc.northvan.armintoussi.contactbook.Utilities.CameraUtil;
 import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
+
+import static java.lang.Long.parseLong;
 
 /**
  * Created by armin2 on 4/18/2018.
@@ -115,6 +120,7 @@ public class CreateContactActivity extends AppCompatActivity {
 
     /** todo - temp helper for inserting contacts. will be changed to a provider. */
     private ContactBookDatabaseHelper contactHelper;
+    private ContactContentProvider mContentProvider;
 
     /**
      * onCreate method, initiates and inflates the view.
@@ -135,6 +141,7 @@ public class CreateContactActivity extends AppCompatActivity {
         getCameraAndStoragePermissions();
 
         contactHelper = ContactBookDatabaseHelper.getInstance(getApplicationContext());
+        mContentProvider = new ContactContentProvider();
 
         //TODO - remove this block of code it's testing.
         SQLiteDatabase db;
@@ -299,23 +306,92 @@ public class CreateContactActivity extends AppCompatActivity {
     }
 
     /**
-     * Inserts a contact into the database.
-     * todo-change this to use the provider rather than the helper.
+     * Inserts a person into the database using the content provider.
+     *
+     * @param contact the contact obj with the Person to insert.
+     *
+     * @return the _id of the Person inserted as a long.
+     *
+     * @throws IllegalArgumentException if the Uri is incorrect.
+     */
+    private long insertPerson(final Contact contact) throws IllegalArgumentException {
+        ContentValues cv = new ContentValues();
+
+        cv.put(ContactBookDatabaseContract.PersonTable.F_NAME, contact.getPerson().getFirstName());
+        cv.put(ContactBookDatabaseContract.PersonTable.L_NAME, contact.getPerson().getLastName());
+        cv.put(ContactBookDatabaseContract.PersonTable.M_NAME, contact.getPerson().getLastName());
+
+        Uri uri = mContentProvider.insert(ContactBookDatabaseContract.PersonTable.PERSON_CONTENT_URI, cv);
+        Log.i(TAG, "Persy URI: " + uri.toString());
+        return parseLong(uri.getLastPathSegment());
+    }
+
+    /**
+     * Inserts an Address into the database using the content provider.
+     *
+     * @param contact the contact obj with the Address to insert.
+     *
+     * @return the _id of the Address inserted as a long.
+     *
+     * @throws IllegalArgumentException if the Uri is incorrect.
+     */
+    private long insertAddress(final Contact contact) throws IllegalArgumentException {
+        ContentValues cv = new ContentValues();
+
+        cv.put(ContactBookDatabaseContract.AddressTable.STREET_ADDR, contact.getAddress().getAddrStreetAddress());
+        cv.put(ContactBookDatabaseContract.AddressTable.CITY_ADDR, contact.getAddress().getAddrCity());
+        cv.put(ContactBookDatabaseContract.AddressTable.STATE_ADDR, contact.getAddress().getAddrState());
+        cv.put(ContactBookDatabaseContract.AddressTable.COUNTRY_ADDR, contact.getAddress().getAddrCountry());
+        cv.put(ContactBookDatabaseContract.AddressTable.POST_ADDR, contact.getAddress().getAddrPostCode());
+
+        Uri uri = mContentProvider.insert(ContactBookDatabaseContract.AddressTable.ADDRESS_CONTENT_URI, cv);
+        return parseLong(uri.getLastPathSegment());
+    }
+
+    /**
+     * Inserts a Contact into the database using the content provider.
+     *
+     * @param contact the contact obj to insert.
+     * @param pid the person  _id.
+     * @param aid the address _id.
+     *
+     * @throws IllegalArgumentException if the Uri is incorrect.
+     */
+    private void insertContact(final Contact contact, final long pid, final long aid)
+                                                    throws IllegalArgumentException {
+        ContentValues cv = new ContentValues();
+
+        cv.put(ContactBookDatabaseContract.ContactTable.ADDRESS_ID, aid);
+        cv.put(ContactBookDatabaseContract.ContactTable.PERSON_ID, pid);
+        cv.put(ContactBookDatabaseContract.ContactTable.HOME_PHONE, contact.getHomePhoneNumber());
+        cv.put(ContactBookDatabaseContract.ContactTable.MOBILE_PHONE, contact.getMobilePhoneNumber());
+        cv.put(ContactBookDatabaseContract.ContactTable.EMAIL, contact.getEmail());
+
+        Uri uri = mContentProvider.insert(ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI, cv);
+    }
+
+    /**
+     * Performs the operations around inserting a contact into the database.
+     * Inserts the person,  reserves the _id.
+     * Inserts the address, reserves the _id.
+     * Finally it in inserts the contact using the reserved _id's
+     *
      * @param contact the contact to insert.
      */
-    private void insertContact(final Contact contact) {
-        final SQLiteDatabase db;
-
-        db = contactHelper.getWritableDatabase();
-        db.beginTransaction();
-
+    private void performContactInsertionOperation(final Contact contact) {
         try {
-            contactHelper.insertContact(db, contact);
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
+            long pid = insertPerson(contact);
+            long aid = insertAddress(contact);
+            insertContact(contact, pid, aid);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            Toast.makeText(CreateContactActivity.this,
+                    "Failed to add a contact.",  Toast.LENGTH_SHORT).show();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Toast.makeText(CreateContactActivity.this,
+                    "Failed to add a contact.",  Toast.LENGTH_SHORT).show();
         }
-        db.close();
     }
 
     /**
@@ -402,20 +478,17 @@ public class CreateContactActivity extends AppCompatActivity {
                 getContactInformation();
                 if(validateContactInformation()) {
                     //do stuff with the contact.
-                    Person person  = createPerson();
-                    Address address = null;
-                    if(checkForAddress()) {
-                        //create the address.
-                        address = createAddress();
-                    }
-
+                    Person person   = createPerson();
+                    Address address = createAddress();
                     Contact contact = createContact(address, person);
                     //todo - remove - left in for now.
                     Log.i(TAG, contact.getEmail());
                     Log.i(TAG, contact.getPerson().getFirstName());
                     Log.i(TAG, contact.getMobilePhoneNumber());
                     Log.i(TAG, contact.getHomePhoneNumber());
-                    insertContact(contact);
+                    //todo - part of the remove segment.
+
+                    performContactInsertionOperation(contact);
                     finish();
                 }
             }

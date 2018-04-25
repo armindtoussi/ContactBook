@@ -55,9 +55,12 @@ public class ContactBookDatabaseContract {
 
         /** Content Uri for the Person Table. */
         public static final Uri PERSON_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME);
+        public static final Uri PERSON_ITEM_URI    = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME + SLASH + "#");
 
         /**The MIME type of Person Uri. */
         public static final String PERSON_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
+                                                         MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
+        public static final String PERSON_ITEM_TYPE    = ContentResolver.CURSOR_ITEM_BASE_TYPE +
                                                          MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
 
         /**Person Table creation query. */

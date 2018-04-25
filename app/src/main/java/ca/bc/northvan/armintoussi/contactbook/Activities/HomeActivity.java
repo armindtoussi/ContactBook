@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -97,6 +98,13 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(0, null, this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "resuming, trying to init a new loader");
+        getLoaderManager().initLoader(1, null, this);
+    }
+
     /**
      * Gets view references.
      */
@@ -124,16 +132,16 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
      *
      * @return arraylist of constructed Contact objs.
      */
-    private ArrayList<Contact> getAllContactsWithPersons() {
-        final ContentResolver resolver = getContentResolver();
-        Cursor cursor = resolver.query(
-                ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI,
-                null,null,null,null,null);
-
-        ArrayList<Contact> contacts = buildContactsWithPerson(cursor);
-
-        return contacts;
-    }
+//    private ArrayList<Contact> getAllContactsWithPersons() {
+//        final ContentResolver resolver = getContentResolver();
+//        Cursor cursor = resolver.query(
+//                ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI,
+//                null,null,null,null,null);
+//
+//        ArrayList<Contact> contacts = buildContactsWithPerson(cursor);
+//
+//        return contacts;
+//    }
 
     /**
      * Builds all the contacts with person information
@@ -181,7 +189,9 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.i(TAG, "LOAD IS FINISHED");
         mRecyclerAdapter.swapCursor(data);
+        //COULD DO SOMETHING HERE OTHER THAN SWAP CURSOR.
     }
 
     @Override
