@@ -16,6 +16,8 @@ import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
  * for ease of repeatedly building a contact.
  */
 public class Contact {
+    /** The contact _id. */
+    private long _id;
     /** Uri for the image. */
     private Uri     image;
     /** Person obj that holds contact name. */
@@ -35,6 +37,7 @@ public class Contact {
      * @param builder builder obj used for building this obj.
      */
     private Contact(Builder builder) {
+        this._id = builder._id;
         this.image = builder.image;
         this.person = builder.person;
         this.address = builder.address;
@@ -48,6 +51,8 @@ public class Contact {
      * a contact with variable arguments.
      */
     public static class Builder {
+        /** The contact _id. */
+        private long _id;
         /** Uri for the image. */
         private Uri     image;
         /** Person obj that holds contact name. */
@@ -60,6 +65,18 @@ public class Contact {
         private String  homePhoneNumber;
         /** String that holds contact mobile phone. */
         private String  mobilePhoneNumber;
+
+        /**
+         * Add the _id.
+         *
+         * @param _id the _id to add to build.
+         *
+         * @return this  obj to continue building.
+         */
+        public Builder _id(final long _id) {
+            this._id = _id;
+            return this;
+        }
 
         /**
          * Add the image.
@@ -144,6 +161,7 @@ public class Contact {
         }
     }
 
+
     /**
      * Sets the mobile phone no.
      *
@@ -201,6 +219,15 @@ public class Contact {
     }
 
     /**
+     * Gets the _id.
+     *
+     * @return  _id as a long.
+     */
+    public long get_id() {
+        return _id;
+    }
+
+    /**
      * Gets the email.
      *
      * @return email as a String.
@@ -255,11 +282,12 @@ public class Contact {
     }
 
     public static Contact fromCursor(Cursor cursor) {
+        final long   _id   = cursor.getLong(0);
         final String fName = cursor.getString(HomeActivity.F_NAME_COL);
         final String lName = cursor.getString(HomeActivity.L_NAME_COL);
         final String num   = cursor.getString(HomeActivity.MOBILE_COL);
 
-        return ContactBuilder.createContact(null,
+        return ContactBuilder.createContact(_id, null,
                 Person.PersonBuilder.createPerson(fName, lName, ""),
                 "", "", num);
     }
@@ -281,12 +309,17 @@ public class Contact {
          *
          * @return a built Contact.
          */
-        public static Contact createContact(final Address address,
+        public static Contact createContact(final long    _id,
+                                            final Address address,
                                             final Person person,
                                             final String email,
                                             final String homePhone,
                                             final String mobilePhone) {
             Contact.Builder cb = new Contact.Builder();
+
+            if (_id > -1) {
+                cb._id(_id);
+            }
 
             if (address != null) {
                 cb.address(address);

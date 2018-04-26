@@ -125,7 +125,7 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(mAdapter == null) {
-            mAdapter = new ContactBookRecyclerAdapter(this, data);
+            mAdapter = new ContactBookRecyclerAdapter(this, data, mContactRecycler);
             mContactRecycler.setAdapter(mAdapter);
         } else {
             mAdapter.swapCursor(data);

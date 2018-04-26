@@ -3,11 +3,12 @@
     package="ca.bc.northvan.armintoussi.contactbook">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <uses-feature android:name="android.hardware.camera"
-                  android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -26,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.HomeActivity" />
-        <activity android:name=".Activities.CreateContactActivity"></activity>
+        <activity android:name=".Activities.CreateContactActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -35,14 +36,15 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
         <provider
-            android:name="ca.bc.northvan.armintoussi.contactbook.Database.ContactContentProvider"
+            android:name=".Database.ContactContentProvider"
             android:authorities="ca.bc.northvan.armintoussi.contactbook.contactDatabase"
             android:enabled="true"
-            android:exported="false">
-        </provider>
+            android:exported="false"></provider>
+
+        <activity android:name=".Activities.EditContactActivity"></activity>
     </application>
 
 </manifest>

@@ -16,7 +16,7 @@ import android.support.v7.widget.RecyclerView;
 public abstract class CursorRecyclerAdapter<VH extends RecyclerView.ViewHolder>
                                                extends RecyclerView.Adapter<VH>  {
     /** The context this can operate in. */
-    private Context mContext;
+    protected Context mContext;
     /** A cursor for data. */
     private Cursor mCursor;
     /** Bool for checking data validity. */

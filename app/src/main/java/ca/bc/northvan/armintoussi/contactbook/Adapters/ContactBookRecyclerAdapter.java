@@ -1,13 +1,18 @@
 package ca.bc.northvan.armintoussi.contactbook.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import ca.bc.northvan.armintoussi.contactbook.Activities.EditContactActivity;
 import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 import ca.bc.northvan.armintoussi.contactbook.R;
 
@@ -21,14 +26,22 @@ import ca.bc.northvan.armintoussi.contactbook.R;
  */
 public class ContactBookRecyclerAdapter extends CursorRecyclerAdapter<ContactBookRecyclerAdapter.ContactHolder> {
 
+    private final View.OnClickListener mOnClickListener = new ContactHolderOnClickListener();
+
+    private RecyclerView mRecyclerView;
+
+    private ArrayList<Contact> mContacts;
+
     /**
      * Creates a Recycler Adapter.
      *
      * @param context the calling context.
      * @param cursor  the cursor to operate one.
      */
-    public ContactBookRecyclerAdapter(Context context, Cursor cursor) {
+    public ContactBookRecyclerAdapter(Context context, Cursor cursor, RecyclerView view) {
         super(context, cursor);
+        mRecyclerView = view;
+        mContacts = new ArrayList<>();
     }
 
     /**
@@ -43,7 +56,7 @@ public class ContactBookRecyclerAdapter extends CursorRecyclerAdapter<ContactBoo
     public ContactHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.contact_holder, parent, false);
-
+        v.setOnClickListener(mOnClickListener);
         ContactHolder vh = new ContactHolder(v);
         return vh;
     }
@@ -58,6 +71,8 @@ public class ContactBookRecyclerAdapter extends CursorRecyclerAdapter<ContactBoo
     @Override
     public void onBindViewHolder(ContactHolder vh, Cursor cursor) {
         Contact contact = Contact.fromCursor(cursor);
+        mContacts.add(contact);
+
         final String name = contact.getPerson().getFirstName() + " "
                 + contact.getPerson().getLastName();
 
@@ -87,6 +102,19 @@ public class ContactBookRecyclerAdapter extends CursorRecyclerAdapter<ContactBoo
             mLayout = v;
             mNameText = v.findViewById(R.id.contact_item_text);
             mNumText = v.findViewById(R.id.contact_number);
+        }
+    }
+
+    private class ContactHolderOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(final View view) {
+            int itemPosition = mRecyclerView.getChildLayoutPosition(view);
+            Toast.makeText(mContext, "Item was clicked " + itemPosition, Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(mContext, EditContactActivity.class);
+            intent.putExtra("contact", mContacts.get(itemPosition).get_id());
+            mContext.startActivity(intent);
         }
     }
 }
