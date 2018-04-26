@@ -36,6 +36,17 @@ public class Utilities {
     }
 
     /**
+     * Capitalizes the first letter of a String.
+     *
+     * @param arg the word to capitalize the first letter of.
+     *
+     * @return a String with the first letter capitalized.
+     */
+    public static String capitalizeFirstLetter(String arg) {
+        return arg.substring(0, 1).toUpperCase() + arg.substring(1);
+    }
+
+    /**
      * Inserts the hyphens into a phone number for
      * consistent formatting.
      *

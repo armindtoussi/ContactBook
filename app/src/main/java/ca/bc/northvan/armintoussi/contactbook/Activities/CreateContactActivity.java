@@ -6,14 +6,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,9 +19,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract;
 import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseHelper;
@@ -372,11 +366,7 @@ public class CreateContactActivity extends AppCompatActivity {
             long pid = insertPerson(contact);
             long aid = insertAddress(contact);
             insertContact(contact, pid, aid);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            Toast.makeText(CreateContactActivity.this,
-                    "Failed to add a contact.",  Toast.LENGTH_SHORT).show();
-        } catch (SQLException e) {
+        } catch (IllegalArgumentException | SQLException e) {
             e.printStackTrace();
             Toast.makeText(CreateContactActivity.this,
                     "Failed to add a contact.",  Toast.LENGTH_SHORT).show();
@@ -400,10 +390,7 @@ public class CreateContactActivity extends AppCompatActivity {
      */
     private boolean checkForCamera() {
         final PackageManager pm = this.getPackageManager();
-        if(pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            return true;
-        }
-        return false;
+        return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
 
     /**

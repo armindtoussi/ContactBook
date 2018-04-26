@@ -190,9 +190,12 @@ public class Person {
          */
         public static Person createPerson(final String first, final String last, final String middle) {
             if(Utilities.checkNotNullNotEmpty(middle)) {
-                return new Person.Builder().firstName(first).lastName(last).middleName(middle).build();
+                return new Person.Builder().firstName(Utilities.capitalizeFirstLetter(first))
+                                           .lastName(Utilities.capitalizeFirstLetter(last))
+                                           .middleName(Utilities.capitalizeFirstLetter(middle)).build();
             } else {
-                return new Person.Builder().firstName(first).lastName(last).build();
+                return new Person.Builder().firstName(Utilities.capitalizeFirstLetter(first))
+                                           .lastName(Utilities.capitalizeFirstLetter(last)).build();
             }
         }
     }

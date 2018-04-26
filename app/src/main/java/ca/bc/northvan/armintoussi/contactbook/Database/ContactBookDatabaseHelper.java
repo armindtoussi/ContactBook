@@ -121,7 +121,8 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
                 + " ON "           + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
                                    + ContactBookDatabaseContract.ContactTable.PERSON_ID + " = "
                                    + ContactBookDatabaseContract.PersonTable.TABLE_NAME + "."
-                                   + ContactBookDatabaseContract.PersonTable._ID;
+                                   + ContactBookDatabaseContract.PersonTable._ID
+                + " ORDER BY " + ContactBookDatabaseContract.PersonTable.F_NAME + " ASC";
 
         cursor = db.rawQuery(query, null);
 
