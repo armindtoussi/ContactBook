@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.test.suitebuilder.annotation.Suppress;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -239,18 +240,6 @@ public class CreateContactActivity extends AppCompatActivity {
                 mEmail.setError(getResources().getString(R.string.email_error));
                 return false;
             }
-        }
-        return true;
-    }
-
-    /**
-     * Check if address line is empty.
-     *
-     * @return true if not empty.
-     */
-    private boolean checkForAddress() {
-        if(!Utilities.checkNotNullNotEmpty(address)) {
-            return false;
         }
         return true;
     }
@@ -489,6 +478,7 @@ public class CreateContactActivity extends AppCompatActivity {
                     //todo - part of the remove segment.
 
                     performContactInsertionOperation(contact);
+                    setResult(RESULT_OK);
                     finish();
                 }
             }

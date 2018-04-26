@@ -27,9 +27,6 @@ public class ContactContentProvider extends ContentProvider {
     public static final int ADDRSS_URI_CODE = 2;
     /** Contact URI code for getting all contacts. */
     public static final int CONTCT_URI_CODE = 3;
-    /** Contact URI code for getting a single contact. */
-    public static final int INDIVIDUAL_CONTACT_CODE = 4;
-    public static final int INDIVIDUAL_PERSON_CODE  = 5;
 
     /** Uri Matcher for building the db uri's. */
     private static final UriMatcher uriMatcher;

@@ -1,8 +1,10 @@
 package ca.bc.northvan.armintoussi.contactbook.Models;
 
+import android.database.Cursor;
 import android.media.Image;
 import android.net.Uri;
 
+import ca.bc.northvan.armintoussi.contactbook.Activities.HomeActivity;
 import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
 
 /**
@@ -250,6 +252,16 @@ public class Contact {
      */
     public String getMobilePhoneNumber() {
         return mobilePhoneNumber;
+    }
+
+    public static Contact fromCursor(Cursor cursor) {
+        final String fName = cursor.getString(HomeActivity.F_NAME_COL);
+        final String lName = cursor.getString(HomeActivity.L_NAME_COL);
+        final String num   = cursor.getString(HomeActivity.MOBILE_COL);
+
+        return ContactBuilder.createContact(null,
+                Person.PersonBuilder.createPerson(fName, lName, ""),
+                "", "", num);
     }
 
     /**

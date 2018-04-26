@@ -33,6 +33,7 @@ public class ContactBookDatabaseContract {
     private static final String NOT_NULL = " NOT NULL";
     /** A comma separator constant. */
     private static final String COMMA_SEP = ",";
+    /** Mime type prefix. */
     private static final String MIME_TRPE_PREFIX = "/vnd.";
 
 
@@ -55,12 +56,9 @@ public class ContactBookDatabaseContract {
 
         /** Content Uri for the Person Table. */
         public static final Uri PERSON_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME);
-        public static final Uri PERSON_ITEM_URI    = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME + SLASH + "#");
 
         /**The MIME type of Person Uri. */
         public static final String PERSON_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
-                                                         MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
-        public static final String PERSON_ITEM_TYPE    = ContentResolver.CURSOR_ITEM_BASE_TYPE +
                                                          MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
 
         /**Person Table creation query. */
@@ -123,12 +121,9 @@ public class ContactBookDatabaseContract {
 
         /** Content Uri for the Contact table. */
         public static final Uri CONTACT_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME);
-        public static final Uri CONTACT_ITEM_URI    = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME + "/#");
         /**The MIME type of Contact Uri. */
         public static final String CONTACT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
                                                           MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
-        public static final String CONTACT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
-                                                       MIME_TRPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
 
 
         /**Contact Table creation query. */

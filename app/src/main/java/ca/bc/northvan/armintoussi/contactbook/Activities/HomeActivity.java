@@ -1,7 +1,6 @@
 package ca.bc.northvan.armintoussi.contactbook.Activities;
 
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -13,17 +12,10 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
-import java.util.ArrayList;
-
-import ca.bc.northvan.armintoussi.contactbook.Adapters.ContactRecyclerAdapter;
+import ca.bc.northvan.armintoussi.contactbook.Adapters.ContactBookRecyclerAdapter;
 import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract;
-import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseHelper;
-import ca.bc.northvan.armintoussi.contactbook.Database.ContactContentProvider;
-import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
-import ca.bc.northvan.armintoussi.contactbook.Models.Person;
 import ca.bc.northvan.armintoussi.contactbook.R;
 
 /**
@@ -52,23 +44,15 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
 
     /** Floating Action Button for adding contact. */
     private FloatingActionButton mFloatingAddContact;
-
     /** Tool bar. */
     private Toolbar mToolbar;
-
     /** Recycler view that holds the view holders/contacts. */
     private RecyclerView mContactRecycler;
     /** Recycler adapter that populates the recycler. */
-    private ContactRecyclerAdapter mRecyclerAdapter;
+    private ContactBookRecyclerAdapter mAdapter;
     /** Layout manager that manages the recycler layout. */
     private RecyclerView.LayoutManager mRecyclerLayoutManager;
 
-    /** Database helper. TODO - check later if this is needed. */
-    private ContactBookDatabaseHelper mHelper;
-    /** Content provider for accessing data. */
-    private ContactContentProvider mProvider;
-
-    private LoaderManager mManager;
 
     /**
      * onCreate method, initiates and inflates the view.
@@ -81,28 +65,20 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //todo - remove later.
-        mHelper = ContactBookDatabaseHelper.getInstance(getApplicationContext());
 
         getViewReferences();
         setBtnListeners();
         setSupportActionBar(mToolbar);
 
+        setupRecycler();
+    }
+
+    private void setupRecycler() {
         mContactRecycler.setHasFixedSize(true);
         mRecyclerLayoutManager = new LinearLayoutManager(this);
         mContactRecycler.setLayoutManager(mRecyclerLayoutManager);
 
-        mRecyclerAdapter = new ContactRecyclerAdapter(this, null);
-        mContactRecycler.setAdapter(mRecyclerAdapter);
-
         getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "resuming, trying to init a new loader");
-        getLoaderManager().initLoader(1, null, this);
     }
 
     /**
@@ -114,6 +90,14 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
         mContactRecycler    = findViewById(R.id.contact_recycler);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 1 && resultCode == RESULT_OK) {
+            getLoaderManager().initLoader(1, null, this);
+
+        }
+    }
+
     /**
      * Sets button listeners for this activity.
      */
@@ -121,58 +105,9 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
         mFloatingAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, CreateContactActivity.class));
+                startActivityForResult(new Intent(HomeActivity.this, CreateContactActivity.class), 1);
             }
         });
-    }
-
-    /**
-     * Gets all contacts with person information using a
-     * ContentResolver query.
-     *
-     * @return arraylist of constructed Contact objs.
-     */
-//    private ArrayList<Contact> getAllContactsWithPersons() {
-//        final ContentResolver resolver = getContentResolver();
-//        Cursor cursor = resolver.query(
-//                ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI,
-//                null,null,null,null,null);
-//
-//        ArrayList<Contact> contacts = buildContactsWithPerson(cursor);
-//
-//        return contacts;
-//    }
-
-    /**
-     * Builds all the contacts with person information
-     * using the cursor that is passed in.
-     *
-     * @param cursor the cursor with access to ContactTable join PersonTable.
-     *
-     * @return an arraylist of full build Contact objects.
-     */
-    private ArrayList<Contact> buildContactsWithPerson(Cursor cursor) {
-        ArrayList<Contact> contacts = new ArrayList<>();
-
-        if(cursor != null && cursor.moveToFirst()) {
-            do {
-                String email  = cursor.getString(EMAIL_COL);
-                String home   = cursor.getString(HOME_COL);
-                String mobile = cursor.getString(MOBILE_COL);
-                String fName  = cursor.getString(F_NAME_COL);
-                String mName  = cursor.getString(L_NAME_COL);
-                String lName  = cursor.getString(M_NAME_COL);
-
-                Person p  = Person.PersonBuilder.createPerson(fName, lName, mName);
-                Contact c = Contact.ContactBuilder.createContact(null, p, email, home, mobile);
-                contacts.add(c);
-            } while (cursor.moveToNext());
-        }
-
-        if(!cursor.isClosed()) {
-            cursor.close();
-        }
-        return contacts;
     }
 
 
@@ -189,13 +124,16 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.i(TAG, "LOAD IS FINISHED");
-        mRecyclerAdapter.swapCursor(data);
-        //COULD DO SOMETHING HERE OTHER THAN SWAP CURSOR.
+        if(mAdapter == null) {
+            mAdapter = new ContactBookRecyclerAdapter(this, data);
+            mContactRecycler.setAdapter(mAdapter);
+        } else {
+            mAdapter.swapCursor(data);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mRecyclerAdapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 }
