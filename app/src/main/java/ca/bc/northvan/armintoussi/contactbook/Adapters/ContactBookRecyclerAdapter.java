@@ -25,11 +25,11 @@ import ca.bc.northvan.armintoussi.contactbook.R;
  *
  */
 public class ContactBookRecyclerAdapter extends CursorRecyclerAdapter<ContactBookRecyclerAdapter.ContactHolder> {
-
+    /** Click Listener for each Contact Holder. */
     private final View.OnClickListener mOnClickListener = new ContactHolderOnClickListener();
-
+    /** A reference to the whole Recycler View. */
     private RecyclerView mRecyclerView;
-
+    /**  An array list of the Contact objs added to the view. */
     private ArrayList<Contact> mContacts;
 
     /**
@@ -63,7 +63,8 @@ public class ContactBookRecyclerAdapter extends CursorRecyclerAdapter<ContactBoo
 
     /**
      * When view holder is bound, this method binds the data
-     * to the view holder.
+     * to the view holder. Also adds the contact to an
+     * array list.
      *
      * @param vh the view holder.
      * @param cursor the cursor containing the query data.
@@ -105,8 +106,17 @@ public class ContactBookRecyclerAdapter extends CursorRecyclerAdapter<ContactBoo
         }
     }
 
+    /**
+     * A Listener for the Contact Holders in our Recycler view.
+     *
+     */
     private class ContactHolderOnClickListener implements View.OnClickListener {
-
+        /**
+         * On Click method of the listener grabs the Contact _id of the
+         * clicked element and pass it to the edit contact activity.
+         *
+         * @param view the view that was clicked.
+         */
         @Override
         public void onClick(final View view) {
             int itemPosition = mRecyclerView.getChildLayoutPosition(view);

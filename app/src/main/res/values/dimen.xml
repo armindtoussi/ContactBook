@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_size">22sp</dimen>
+    <dimen name="header_text">36dp</dimen>
 
     <dimen name="card_sub_text">16sp</dimen>
 

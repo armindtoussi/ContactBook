@@ -43,7 +43,7 @@ public class Utilities {
      * @return a String with the first letter capitalized.
      */
     public static String capitalizeFirstLetter(String arg) {
-        return arg.substring(0, 1).toUpperCase() + arg.substring(1);
+        return (arg!= null) ? arg.substring(0, 1).toUpperCase() + arg.substring(1) : null;
     }
 
     /**

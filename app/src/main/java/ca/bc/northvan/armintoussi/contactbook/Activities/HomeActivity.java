@@ -32,7 +32,7 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
     /** Email Column on person & contact table join. */
     public static final int EMAIL_COL  = 3;
     /** Home phone Column on person & contact table join. */
-    public static final int HOME_COL   = 4;
+    public static final int HOME_COL   = 5;
     /** Mobile phone Column on person & contact table join. */
     public static final int MOBILE_COL = 4;
     /** First name Column on person & contact table join. */
@@ -118,7 +118,7 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
 
         uri    = ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI;
         loader = new CursorLoader(HomeActivity.this, uri, null, null, null,
-                ContactBookDatabaseContract.PersonTable.F_NAME + " ASC");
+                null);
         return loader;
     }
 

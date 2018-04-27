@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import static java.lang.Long.parseLong;
+
 /**
  * Created by armin2 on 4/20/2018.
  *
@@ -27,7 +29,8 @@ public class ContactContentProvider extends ContentProvider {
     public static final int ADDRSS_URI_CODE = 2;
     /** Contact URI code for getting all contacts. */
     public static final int CONTCT_URI_CODE = 3;
-
+    /** Contact URI Code for gettng a single contact full. */
+    public static final int FULL_CONTACT_CODE = 4;
     /** Uri Matcher for building the db uri's. */
     private static final UriMatcher uriMatcher;
 
@@ -47,6 +50,9 @@ public class ContactContentProvider extends ContentProvider {
         uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
                           ContactBookDatabaseContract.ContactTable.TABLE_NAME,
                           CONTCT_URI_CODE);
+        uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
+                          ContactBookDatabaseContract.ContactTable.TABLE_NAME + "/#",
+                          FULL_CONTACT_CODE);
     }
 
     @Override
@@ -77,6 +83,10 @@ public class ContactContentProvider extends ContentProvider {
             case CONTCT_URI_CODE:
                 type = ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_TYPE;
                 break;
+            case FULL_CONTACT_CODE:
+                type = ContactBookDatabaseContract.ContactTable.CONTACT_FULL_TYPE;
+                Log.i(TAG, "fULL: " + FULL_CONTACT_CODE);
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported Uri: " + uri);
         }
@@ -100,24 +110,38 @@ public class ContactContentProvider extends ContentProvider {
                         final String[] selectionArgs, final String sortOrder) {
         Log.i(TAG, "$#%#%#$%Querying hopefully@#$@#%#%");
         final Cursor cursor;
+
         //todo- maybe change this to sqlbuilder method of doing query.
         switch(uriMatcher.match(uri)) {
             case PERSON_URI_CODE:
                 //TODO do stuff maybe.
                 cursor = null;
+                Log.i(TAG, "am i in PERSY?");
+
                 break;
             case ADDRSS_URI_CODE:
                 //Todo do stuff maybe.
+                Log.i(TAG, " am I IN ADDY? ");
+
                 cursor = null;
                 break;
             case CONTCT_URI_CODE:
                 //Grab all contacts with persons.
                 final SQLiteDatabase db;
 
+                Log.i(TAG, "IN THE WRONG PLACE");
                 db     = dbHelper.getReadableDatabase();
                 cursor = dbHelper.getAllContactsWithPersons(this.getContext(), db);
                 break;
+            case FULL_CONTACT_CODE:
+                String _id = uri.getLastPathSegment();
+                Log.i(TAG, "query id " + _id);
+
+                db     = dbHelper.getReadableDatabase();
+                cursor = dbHelper.getSingleFullContact(this.getContext(), db, parseLong(_id));
+                break;
             default:
+                Log.i(TAG, "DEFAULT: ");
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 

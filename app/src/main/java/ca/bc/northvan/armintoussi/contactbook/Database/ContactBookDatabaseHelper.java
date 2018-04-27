@@ -104,8 +104,8 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Gets all contacts from the contact Table
-     * but on
+     * Gets all contacts from the contact Table with Person table
+     * joined to it so we can get names.
      *
      * @param context app context.
      * @param db a database reference.
@@ -119,8 +119,8 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
                   "SELECT * FROM " + ContactBookDatabaseContract.ContactTable.TABLE_NAME
                 + " INNER JOIN "   + ContactBookDatabaseContract.PersonTable.TABLE_NAME
                 + " ON "           + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
-                                   + ContactBookDatabaseContract.ContactTable.PERSON_ID + " = "
-                                   + ContactBookDatabaseContract.PersonTable.TABLE_NAME + "."
+                                   + ContactBookDatabaseContract.ContactTable.PERSON_ID  + " = "
+                                   + ContactBookDatabaseContract.PersonTable.TABLE_NAME  + "."
                                    + ContactBookDatabaseContract.PersonTable._ID
                 + " ORDER BY " + ContactBookDatabaseContract.PersonTable.F_NAME + " ASC";
 
@@ -128,6 +128,42 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
 
         cursor.setNotificationUri(context.getContentResolver(),
                 ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI);
+
+        return cursor;
+    }
+
+    /**
+     * Gets a single contact from the Contact table joined with
+     * both Address and Person table so we have all contact information.
+     *
+     * @param context app context.
+     * @param db a database reference.
+     * @param id the id of the contact to search for.
+     *
+     * @return a cursor with single row of results.
+     */
+    public Cursor getSingleFullContact(final Context context, final SQLiteDatabase db, final long id) {
+        final Cursor cursor;
+
+        final String query =
+                  "SELECT * FROM " + ContactBookDatabaseContract.ContactTable.TABLE_NAME
+                + " INNER JOIN "   + ContactBookDatabaseContract.PersonTable.TABLE_NAME
+                + " ON "           + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
+                                   + ContactBookDatabaseContract.ContactTable.PERSON_ID  + " = "
+                                   + ContactBookDatabaseContract.PersonTable.TABLE_NAME  + "."
+                                   + ContactBookDatabaseContract.PersonTable._ID
+                + " INNER JOIN "   + ContactBookDatabaseContract.AddressTable.TABLE_NAME
+                + " ON "           + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
+                                   + ContactBookDatabaseContract.ContactTable.ADDRESS_ID + " = "
+                                   + ContactBookDatabaseContract.AddressTable.TABLE_NAME + "."
+                                   + ContactBookDatabaseContract.AddressTable._ID
+                + " WHERE "        + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
+                                   + ContactBookDatabaseContract.ContactTable._ID
+                + " = "            + id;
+        cursor = db.rawQuery(query, null);
+
+        cursor.setNotificationUri(context.getContentResolver(),
+                ContactBookDatabaseContract.ContactTable.CONTACT_FULL_URI);
 
         return cursor;
     }
