@@ -19,11 +19,13 @@ import ca.bc.northvan.armintoussi.contactbook.Models.Address;
 import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 import ca.bc.northvan.armintoussi.contactbook.Models.Person;
 import ca.bc.northvan.armintoussi.contactbook.R;
+import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
 
 public class EditContactActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     /** Debugging class tag. */
     private static final String TAG = EditContactActivity.class.getName();
 
+    /** */
     private static final int _ID      = 0;
     private static final int PERSON_ID = 1;
     private static final int ADDRESS_ID = 2;
@@ -59,6 +61,13 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
 
     private Contact mContact;
 
+    /**
+     * onCreate method, initiates and inflates the view.
+     * Also handles some startup needs like adapters and
+     * getting references to views.
+     *
+     * @param savedInstanceState previous state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,10 +78,11 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
         setBtnListeners();
 
         getLoaderManager().initLoader(0, null, this);
-
-//        populateEditContactForm();
     }
 
+    /**
+     * Gets all layout view references.
+     */
     private void getViewReferences() {
         mFName         = findViewById(R.id.f_name);
         mMName         = findViewById(R.id.m_name);
@@ -89,10 +99,41 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
         mDel           = findViewById(R.id.delete);
     }
 
+    /**
+     * Populates the edit text views with all the
+     * contact information.
+     *
+     */
     private void populateEditContactForm() {
         mFName.setText(mContact.getPerson().getFirstName());
+        if(Utilities.checkNotNullNotEmpty(mContact.getPerson().getMiddleName())) {
+            mMName.setText(mContact.getPerson().getMiddleName());
+        }
+        mLName.setText(mContact.getPerson().getLastName());
+        mHNumber.setText(mContact.getHomePhoneNumber());
+        mMNumber.setText(mContact.getMobilePhoneNumber());
+        mEmail.setText(mContact.getEmail());
+        if(Utilities.checkNotNullNotEmpty(mContact.getAddress().getAddrStreetAddress())) {
+            mStreetAddress.setText(mContact.getAddress().getAddrStreetAddress());
+        }
+        if(Utilities.checkNotNullNotEmpty(mContact.getAddress().getAddrCity())) {
+            mCity.setText(mContact.getAddress().getAddrCity());
+        }
+        if(Utilities.checkNotNullNotEmpty(mContact.getAddress().getAddrState())) {
+            mRegion.setText(mContact.getAddress().getAddrState());
+        }
+        if(Utilities.checkNotNullNotEmpty(mContact.getAddress().getAddrCountry())) {
+            mCountry.setText(mContact.getAddress().getAddrCountry());
+        }
+        if(Utilities.checkNotNullNotEmpty(mContact.getAddress().getAddrPostCode())) {
+            mPostCode.setText(mContact.getAddress().getAddrPostCode());
+        }
     }
 
+    /**
+     * Handles the incoming bundle,
+     * gets the Contact _ID.
+     */
     private void handleBundle() {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -100,7 +141,10 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
         Log.i(TAG, "Id: " + id);
     }
 
-
+    /**
+     * Sets the button listeners for the
+     * edit and delete contact buttons.
+     */
     private void setBtnListeners() {
         mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,7 +200,9 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
      */
     private Person createPerson(Cursor cursor) {
         cursor.moveToFirst();
-        return Person.PersonBuilder.createPerson(cursor.getString(F_NAME), cursor.getString(M_NAME), cursor.getString(L_NAME));
+        return Person.PersonBuilder.createPerson(cursor.getString(F_NAME),
+                                                 cursor.getString(M_NAME),
+                                                 cursor.getString(L_NAME));
     }
 
     /**

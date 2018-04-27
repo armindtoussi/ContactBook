@@ -41,6 +41,8 @@
     <string name="edit_contact">Edit Contact</string>
     <string name="edit">Edit</string>
     <string name="del">Delete</string>
+    <string name="region_state">Region</string>
+    <string name="post">Postal Code</string>
 
     <!-- Temp Strings -->
     <string name="whatever">Whatever</string>
