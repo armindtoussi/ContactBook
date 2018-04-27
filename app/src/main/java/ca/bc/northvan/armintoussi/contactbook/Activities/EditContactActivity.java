@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract;
 import ca.bc.northvan.armintoussi.contactbook.Models.Address;
@@ -65,8 +66,11 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
 
         handleBundle();
         getViewReferences();
+        setBtnListeners();
 
         getLoaderManager().initLoader(0, null, this);
+
+//        populateEditContactForm();
     }
 
     private void getViewReferences() {
@@ -85,6 +89,9 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
         mDel           = findViewById(R.id.delete);
     }
 
+    private void populateEditContactForm() {
+        mFName.setText(mContact.getPerson().getFirstName());
+    }
 
     private void handleBundle() {
         Intent intent = getIntent();
@@ -98,7 +105,14 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
         mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                Toast.makeText(getApplicationContext(), "Edit clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Delete clicked", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -175,6 +189,7 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         buildContact(data);
+        populateEditContactForm();
     }
 
     @Override
