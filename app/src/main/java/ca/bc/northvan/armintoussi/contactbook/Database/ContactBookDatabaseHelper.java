@@ -10,6 +10,8 @@ import android.util.Log;
 
 import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 
+import static ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract.*;
+
 /**
  * Created by armin2 on 4/20/2018.
  *
@@ -33,8 +35,7 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
      * @param context the context.
      */
     private ContactBookDatabaseHelper(final Context context) {
-        super(context, ContactBookDatabaseContract.DATABASE_NAME,
-                null, ContactBookDatabaseContract.SCHEMA_VERSION);
+        super(context, DATABASE_NAME, null, SCHEMA_VERSION);
         db = getWritableDatabase();
     }
 
@@ -75,9 +76,9 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.i(TAG, "Creating the tables");
-        db.execSQL(ContactBookDatabaseContract.PersonTable.CREATE_PERSON_TABLE);
-        db.execSQL(ContactBookDatabaseContract.AddressTable.CREATE_ADDRESS_TABLE);
-        db.execSQL(ContactBookDatabaseContract.ContactTable.CREATE_CONTACT_TABLE);
+        db.execSQL(PersonTable.CREATE_PERSON_TABLE);
+        db.execSQL(AddressTable.CREATE_ADDRESS_TABLE);
+        db.execSQL(ContactTable.CREATE_CONTACT_TABLE);
     }
 
     /**
@@ -90,7 +91,7 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(ContactBookDatabaseContract.ContactTable.DELETE_CONTACT_TABLE);
+        db.execSQL(ContactTable.DELETE_CONTACT_TABLE);
         onCreate(db);
     }
 
@@ -98,7 +99,7 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
     public long getNumberOfContacts(final SQLiteDatabase db) {
         final long numEntries;
 
-        numEntries = DatabaseUtils.queryNumEntries(db, ContactBookDatabaseContract.ContactTable.TABLE_NAME);
+        numEntries = DatabaseUtils.queryNumEntries(db, ContactTable.TABLE_NAME);
 
         return numEntries;
     }
@@ -116,18 +117,18 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
         final Cursor cursor;
 
         final String query =
-                  "SELECT * FROM " + ContactBookDatabaseContract.ContactTable.TABLE_NAME
-                + " INNER JOIN "   + ContactBookDatabaseContract.PersonTable.TABLE_NAME
-                + " ON "           + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
-                                   + ContactBookDatabaseContract.ContactTable.PERSON_ID  + " = "
-                                   + ContactBookDatabaseContract.PersonTable.TABLE_NAME  + "."
-                                   + ContactBookDatabaseContract.PersonTable._ID
-                + " ORDER BY " + ContactBookDatabaseContract.PersonTable.F_NAME + " ASC";
+                  "SELECT * FROM " + ContactTable.TABLE_NAME
+                + " INNER JOIN "   + PersonTable.TABLE_NAME
+                + " ON "           + ContactTable.TABLE_NAME + "."
+                                   + ContactTable.PERSON_ID  + " = "
+                                   + PersonTable.TABLE_NAME  + "."
+                                   + PersonTable._ID
+                + " ORDER BY " + PersonTable.F_NAME + " ASC";
 
         cursor = db.rawQuery(query, null);
 
         cursor.setNotificationUri(context.getContentResolver(),
-                ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_URI);
+                ContactTable.CONTACT_CONTENT_URI);
 
         return cursor;
     }
@@ -146,25 +147,63 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
         final Cursor cursor;
 
         final String query =
-                  "SELECT * FROM " + ContactBookDatabaseContract.ContactTable.TABLE_NAME
-                + " INNER JOIN "   + ContactBookDatabaseContract.PersonTable.TABLE_NAME
-                + " ON "           + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
-                                   + ContactBookDatabaseContract.ContactTable.PERSON_ID  + " = "
-                                   + ContactBookDatabaseContract.PersonTable.TABLE_NAME  + "."
-                                   + ContactBookDatabaseContract.PersonTable._ID
-                + " INNER JOIN "   + ContactBookDatabaseContract.AddressTable.TABLE_NAME
-                + " ON "           + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
-                                   + ContactBookDatabaseContract.ContactTable.ADDRESS_ID + " = "
-                                   + ContactBookDatabaseContract.AddressTable.TABLE_NAME + "."
-                                   + ContactBookDatabaseContract.AddressTable._ID
-                + " WHERE "        + ContactBookDatabaseContract.ContactTable.TABLE_NAME + "."
-                                   + ContactBookDatabaseContract.ContactTable._ID
+                  "SELECT * FROM " + ContactTable.TABLE_NAME
+                + " INNER JOIN "   + PersonTable.TABLE_NAME
+                + " ON "           + ContactTable.TABLE_NAME + "."
+                                   + ContactTable.PERSON_ID  + " = "
+                                   + PersonTable.TABLE_NAME  + "."
+                                   + PersonTable._ID
+                + " INNER JOIN "   + AddressTable.TABLE_NAME
+                + " ON "           + ContactTable.TABLE_NAME + "."
+                                   + ContactTable.ADDRESS_ID + " = "
+                                   + AddressTable.TABLE_NAME + "."
+                                   + AddressTable._ID
+                + " WHERE "        + ContactTable.TABLE_NAME + "."
+                                   + ContactTable._ID
                 + " = "            + id;
         cursor = db.rawQuery(query, null);
 
-        cursor.setNotificationUri(context.getContentResolver(),
-                ContactBookDatabaseContract.ContactTable.CONTACT_FULL_URI);
+        cursor.setNotificationUri(context.getContentResolver(), ContactTable.CONTACT_ITEM_URI);
 
         return cursor;
+    }
+
+    /**
+     * Updates an entry in the Person table.
+     *
+     * @param db a database reference.
+     * @param id the id of the Person to update.
+     * @param cv the values to insert.
+     *
+     * @return the number of rows affected.
+     */
+    public int updateSinglePerson(final SQLiteDatabase db, final long id, final ContentValues cv) {
+        return db.update(PersonTable.TABLE_NAME, cv, "_id="+id, null);
+    }
+
+    /**
+     * Updates an entry in the Address table.
+     *
+     * @param db a database reference.
+     * @param id the id of the Address to update.
+     * @param cv the values to insert.
+     *
+     * @return the number of rows affected.
+     */
+    public int updateSingleAddress(final SQLiteDatabase db, final long id, final ContentValues cv) {
+        return db.update(AddressTable.TABLE_NAME, cv, "_id=" + id, null);
+    }
+
+    /**
+     * Updates an entry in the Contact table.
+     *
+     * @param db a database reference.
+     * @param id the id of the Contact to update.
+     * @param cv the values to insert.
+     *
+     * @return the number of rows affected.
+     */
+    public int updateSingleContact(final SQLiteDatabase db, final long id, final ContentValues cv) {
+        return db.update(ContactTable.TABLE_NAME, cv, "_id=" + id, null);
     }
 }

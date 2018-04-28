@@ -18,6 +18,10 @@ import ca.bc.northvan.armintoussi.contactbook.Utilities.Utilities;
 public class Contact {
     /** The contact _id. */
     private long _id;
+    /** The Person _id. */
+    private long person_id;
+    /** The Address _id. */
+    private long address_id;
     /** Uri for the image. */
     private Uri     image;
     /** Person obj that holds contact name. */
@@ -37,12 +41,14 @@ public class Contact {
      * @param builder builder obj used for building this obj.
      */
     private Contact(Builder builder) {
-        this._id = builder._id;
-        this.image = builder.image;
-        this.person = builder.person;
-        this.address = builder.address;
-        this.email = builder.email;
-        this.homePhoneNumber = builder.homePhoneNumber;
+        this._id        = builder._id;
+        this.person_id  = builder.person_id;
+        this.address_id = builder.address_id;
+        this.image      = builder.image;
+        this.person     = builder.person;
+        this.address    = builder.address;
+        this.email      = builder.email;
+        this.homePhoneNumber   = builder.homePhoneNumber;
         this.mobilePhoneNumber = builder.mobilePhoneNumber;
     }
 
@@ -53,6 +59,10 @@ public class Contact {
     public static class Builder {
         /** The contact _id. */
         private long _id;
+        /** The Person _id. */
+        private long person_id;
+        /** The Address _id. */
+        private long address_id;
         /** Uri for the image. */
         private Uri     image;
         /** Person obj that holds contact name. */
@@ -71,10 +81,34 @@ public class Contact {
          *
          * @param _id the _id to add to build.
          *
-         * @return this  obj to continue building.
+         * @return this obj to continue building.
          */
         public Builder _id(final long _id) {
             this._id = _id;
+            return this;
+        }
+
+        /**
+         * Add the person _id.
+         *
+         * @param person_id the person_id to add to build.
+         *
+         * @return this obj to continue building.
+         */
+        public Builder person_id(final long person_id) {
+            this.person_id = person_id;
+            return this;
+        }
+
+        /**
+         * Add the address_id.
+         *
+         * @param address_id the address_id to add to build.
+         *
+         * @return this obj to continue building.
+         */
+        public Builder address_id(final long address_id) {
+            this.address_id = address_id;
             return this;
         }
 
@@ -228,6 +262,24 @@ public class Contact {
     }
 
     /**
+     * Gets the person_id.
+     *
+     * @return person_id as a long.
+     */
+    public long getPerson_id() {
+        return person_id;
+    }
+
+    /**
+     * Gets the address_id.
+     *
+     * @return address_id as a long.
+     */
+    public long getAddress_id() {
+        return address_id;
+    }
+
+    /**
      * Gets the email.
      *
      * @return email as a String.
@@ -287,7 +339,7 @@ public class Contact {
         final String lName = cursor.getString(HomeActivity.L_NAME_COL);
         final String num   = cursor.getString(HomeActivity.MOBILE_COL);
 
-        return ContactBuilder.createContact(_id, null,
+        return ContactBuilder.createContact(_id, -1, -1, null,
                 Person.PersonBuilder.createPerson(fName, lName, ""),
                 "", "", num);
     }
@@ -310,6 +362,8 @@ public class Contact {
          * @return a built Contact.
          */
         public static Contact createContact(final long    _id,
+                                            final long person_id,
+                                            final long address_id,
                                             final Address address,
                                             final Person person,
                                             final String email,
@@ -320,7 +374,12 @@ public class Contact {
             if (_id > -1) {
                 cb._id(_id);
             }
-
+            if(person_id > -1) {
+                cb.person_id(person_id);
+            }
+            if(address_id > -1) {
+                cb.address_id(address_id);
+            }
             if (address != null) {
                 cb.address(address);
             }

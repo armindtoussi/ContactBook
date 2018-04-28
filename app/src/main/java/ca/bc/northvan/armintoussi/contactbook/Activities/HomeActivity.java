@@ -73,6 +73,10 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
         setupRecycler();
     }
 
+    /**
+     * Sets up the recycler view, with fixed size, layout manager,
+     * and inits the loader manager.
+     */
     private void setupRecycler() {
         mContactRecycler.setHasFixedSize(true);
         mRecyclerLayoutManager = new LinearLayoutManager(this);
@@ -90,6 +94,13 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
         mContactRecycler    = findViewById(R.id.contact_recycler);
     }
 
+    /**
+     * Hands callbacks from intent calls with results expected.
+     *
+     * @param requestCode request code of the intent.
+     * @param resultCode  the result of the intent.
+     * @param data the data shipped back by the intent.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 1 && resultCode == RESULT_OK) {
@@ -110,7 +121,15 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
         });
     }
 
-
+    /**
+     * When loader is initiated this method is called.
+     * Queries the provider for all contacts.
+     *
+     * @param id the id of the loader.
+     * @param args extra args as a bundle.
+     *
+     * @return the loader with query.
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         final CursorLoader loader;
@@ -122,6 +141,14 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
         return loader;
     }
 
+    /**
+     * When loader is finished it's request, this method is
+     * called. It sets the adapter if it's null or swaps the cursor
+     * if it's not.
+     *
+     * @param loader the loader with query.
+     * @param data the data retrieved from the query.
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(mAdapter == null) {
@@ -132,6 +159,12 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    /**
+     * When loader is reset this method is called.
+     * Cursor is swapped to null cursor.
+     *
+     * @param loader the cursor loader.
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);

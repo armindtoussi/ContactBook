@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
+import static ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract.*;
 import static java.lang.Long.parseLong;
 
 /**
@@ -30,7 +31,11 @@ public class ContactContentProvider extends ContentProvider {
     /** Contact URI code for getting all contacts. */
     public static final int CONTCT_URI_CODE = 3;
     /** Contact URI Code for gettng a single contact full. */
-    public static final int FULL_CONTACT_CODE = 4;
+    public static final int CONTENT_ITEM_CODE = 4;
+    /** Person URI Code for a single person.  */
+    public static final int PERSON_URI_ITEM_CODE = 5;
+    /** Address URI Code for a single address. */
+    public static final int ADDRESS_URI_ITEM_CODE = 6;
     /** Uri Matcher for building the db uri's. */
     private static final UriMatcher uriMatcher;
 
@@ -40,19 +45,26 @@ public class ContactContentProvider extends ContentProvider {
 
     /** Add the necessary Uri's to the matcher. */
     static {
+        Log.i(TAG, "initializing this shit ?");
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
-                          ContactBookDatabaseContract.PersonTable.TABLE_NAME,
+        uriMatcher.addURI(AUTHORITY,
+                          PersonTable.TABLE_NAME,
                           PERSON_URI_CODE);
-        uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
-                          ContactBookDatabaseContract.AddressTable.TABLE_NAME,
+        uriMatcher.addURI(AUTHORITY,
+                          AddressTable.TABLE_NAME,
                           ADDRSS_URI_CODE);
-        uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
-                          ContactBookDatabaseContract.ContactTable.TABLE_NAME,
+        uriMatcher.addURI(AUTHORITY,
+                          ContactTable.TABLE_NAME,
                           CONTCT_URI_CODE);
-        uriMatcher.addURI(ContactBookDatabaseContract.AUTHORITY,
-                          ContactBookDatabaseContract.ContactTable.TABLE_NAME + "/#",
-                          FULL_CONTACT_CODE);
+        uriMatcher.addURI(AUTHORITY,
+                          ContactTable.TABLE_NAME + "/#",
+                          CONTENT_ITEM_CODE);
+        uriMatcher.addURI(AUTHORITY,
+                          PersonTable.TABLE_NAME + "/#",
+                          PERSON_URI_ITEM_CODE);
+        uriMatcher.addURI(AUTHORITY,
+                          AddressTable.TABLE_NAME + "/#",
+                          ADDRESS_URI_ITEM_CODE);
     }
 
     @Override
@@ -72,20 +84,26 @@ public class ContactContentProvider extends ContentProvider {
     @Override
     public String getType(final Uri uri) {
         final String type;
-
+        Log.i(TAG, "getting type ");
         switch(uriMatcher.match(uri)) {
             case PERSON_URI_CODE:
-                type = ContactBookDatabaseContract.PersonTable.PERSON_CONTENT_TYPE;
+                type = PersonTable.PERSON_CONTENT_TYPE;
+                break;
+            case PERSON_URI_ITEM_CODE:
+                type = PersonTable.PERSON_ITEM_TYPE;
+                Log.i(TAG, "PERSON ITEM TYPE ");
                 break;
             case ADDRSS_URI_CODE:
-                type = ContactBookDatabaseContract.AddressTable.ADDRESS_CONTENT_TYPE;
+                type = AddressTable.ADDRESS_CONTENT_TYPE;
                 break;
             case CONTCT_URI_CODE:
-                type = ContactBookDatabaseContract.ContactTable.CONTACT_CONTENT_TYPE;
+                type = ContactTable.CONTACT_CONTENT_TYPE;
                 break;
-            case FULL_CONTACT_CODE:
-                type = ContactBookDatabaseContract.ContactTable.CONTACT_FULL_TYPE;
-                Log.i(TAG, "fULL: " + FULL_CONTACT_CODE);
+            case CONTENT_ITEM_CODE:
+                type = ContactTable.CONTACT_FULL_TYPE;
+                break;
+            case ADDRESS_URI_ITEM_CODE:
+                type = AddressTable.ADDRESS_ITEM_TYPE;
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported Uri: " + uri);
@@ -110,35 +128,19 @@ public class ContactContentProvider extends ContentProvider {
                         final String[] selectionArgs, final String sortOrder) {
         Log.i(TAG, "$#%#%#$%Querying hopefully@#$@#%#%");
         final Cursor cursor;
+        final SQLiteDatabase db;
 
         //todo- maybe change this to sqlbuilder method of doing query.
         switch(uriMatcher.match(uri)) {
-            case PERSON_URI_CODE:
-                //TODO do stuff maybe.
-                cursor = null;
-                Log.i(TAG, "am i in PERSY?");
-
-                break;
-            case ADDRSS_URI_CODE:
-                //Todo do stuff maybe.
-                Log.i(TAG, " am I IN ADDY? ");
-
-                cursor = null;
-                break;
             case CONTCT_URI_CODE:
-                //Grab all contacts with persons.
-                final SQLiteDatabase db;
-
                 Log.i(TAG, "IN THE WRONG PLACE");
                 db     = dbHelper.getReadableDatabase();
                 cursor = dbHelper.getAllContactsWithPersons(this.getContext(), db);
                 break;
-            case FULL_CONTACT_CODE:
+            case CONTENT_ITEM_CODE:
                 String _id = uri.getLastPathSegment();
-                Log.i(TAG, "query id " + _id);
-
-                db     = dbHelper.getReadableDatabase();
-                cursor = dbHelper.getSingleFullContact(this.getContext(), db, parseLong(_id));
+                db         = dbHelper.getReadableDatabase();
+                cursor     = dbHelper.getSingleFullContact(this.getContext(), db, parseLong(_id));
                 break;
             default:
                 Log.i(TAG, "DEFAULT: ");
@@ -176,8 +178,33 @@ public class ContactContentProvider extends ContentProvider {
     @Override
     public int update(final Uri uri, final ContentValues values,
                       final String selection, final String[] selectionArgs) {
-        //Todo - implement later if needed.
-        throw new UnsupportedOperationException("Update not yet implemented");
+        if(dbHelper != null) {
+            dbHelper = ContactBookDatabaseHelper.getInstance(getContext());
+        }
+
+        final int numRows;
+        final SQLiteDatabase db;
+        Log.i(TAG, " TRYING TO GET MATCH ");
+
+        switch(uriMatcher.match(uri)) {
+            case PERSON_URI_ITEM_CODE:
+                db      = dbHelper.getWritableDatabase();
+                numRows = dbHelper.updateSinglePerson(db, parseLong(selection), values);
+                Log.i(TAG, "Num Rows Affected: " + numRows);
+                break;
+            case ADDRESS_URI_ITEM_CODE:
+                db      = dbHelper.getWritableDatabase();
+                numRows = dbHelper.updateSingleAddress(db, parseLong(selection), values);
+                break;
+            case CONTENT_ITEM_CODE:
+                db      = dbHelper.getWritableDatabase();
+                numRows = dbHelper.updateSingleContact(db, parseLong(selection), values);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported Uri: " + uri);
+        }
+
+        return numRows;
     }
 
     /**
@@ -194,20 +221,23 @@ public class ContactContentProvider extends ContentProvider {
             dbHelper = ContactBookDatabaseHelper.getInstance(getContext());
         }
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long id;
+        final SQLiteDatabase db;
+        final long id;
 
         switch(uriMatcher.match(uri)) {
             case CONTCT_URI_CODE:
-                id = db.insert(ContactBookDatabaseContract.ContactTable.TABLE_NAME,
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(ContactTable.TABLE_NAME,
                         null, values);
                 return getUriForId(id, uri);
             case PERSON_URI_CODE:
-                id = db.insert(ContactBookDatabaseContract.PersonTable.TABLE_NAME,
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(PersonTable.TABLE_NAME,
                         null, values);
                 return getUriForId(id, uri);
             case ADDRSS_URI_CODE:
-                id = db.insert(ContactBookDatabaseContract.AddressTable.TABLE_NAME,
+                db = dbHelper.getWritableDatabase();
+                id = db.insert(AddressTable.TABLE_NAME,
                         null, values);
                 return getUriForId(id, uri);
             default:
