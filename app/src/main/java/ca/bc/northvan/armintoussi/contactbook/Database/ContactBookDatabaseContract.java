@@ -56,10 +56,12 @@ public class ContactBookDatabaseContract {
 
         /** Content Uri for the Person Table. */
         public static final Uri PERSON_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME);
+        /** Content Uri for a single Row in the Person table. */
         public static final Uri PERSON_ITEM_URI    = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME + "/#");
-        /**The MIME type of Person Uri. */
+        /** The MIME type of Person Uri. */
         public static final String PERSON_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
                                                          MIME_TYPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
+        /** The MIME type for a single Row in the Person table. */
         public static final String PERSON_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
                                                       MIME_TYPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
 
@@ -89,10 +91,12 @@ public class ContactBookDatabaseContract {
 
         /** Content Uri for the Address Table. */
         public static final Uri ADDRESS_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME);
+        /** Content Uri for a single Row in the Address table. */
         public static final Uri ADDRESS_ITEM_URI    = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME + "/#");
-        /**The MIME type of Person Uri. */
+        /**The MIME type of Address Uri. */
         public static final String ADDRESS_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
                                                           MIME_TYPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
+        /** The MIME type for a single Row in the Adress table. */
         public static final String ADDRESS_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
                                                           MIME_TYPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
 
@@ -126,11 +130,12 @@ public class ContactBookDatabaseContract {
 
         /** Content Uri for the Contact table. */
         public static final Uri CONTACT_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME);
-        /** */
+        /** Content Uri for a single Row in the Contact Table. */
         public static final Uri CONTACT_ITEM_URI = Uri.parse(SCHEME + AUTHORITY + SLASH + TABLE_NAME + "/#");
-        /**The MIME type of Contact Uri. */
+        /** The MIME type of Contact Uri. */
         public static final String CONTACT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE +
                                                           MIME_TYPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
+        /** The MIME type for single Row in the Contact Table. */
         public static final String CONTACT_FULL_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE +
                                                           MIME_TYPE_PREFIX + AUTHORITY + "." + TABLE_NAME;
 

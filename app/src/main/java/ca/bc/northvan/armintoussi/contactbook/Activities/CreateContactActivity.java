@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,7 +20,6 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract;
-import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseHelper;
 import ca.bc.northvan.armintoussi.contactbook.Database.ContactContentProvider;
 import ca.bc.northvan.armintoussi.contactbook.Models.Address;
 import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
@@ -113,8 +111,7 @@ public class CreateContactActivity extends AppCompatActivity {
     /** Boolean for checking if user enter a home phone. */
     private boolean hasHomePhone;
 
-    /** todo - temp helper for inserting contacts. will be changed to a provider. */
-    private ContactBookDatabaseHelper contactHelper;
+    /** Contact Content provider for db queries. */
     private ContactContentProvider mContentProvider;
 
     /**
@@ -135,14 +132,7 @@ public class CreateContactActivity extends AppCompatActivity {
         //call permissions after view inflated.
         getCameraAndStoragePermissions();
 
-        contactHelper = ContactBookDatabaseHelper.getInstance(getApplicationContext());
         mContentProvider = new ContactContentProvider();
-
-        //TODO - remove this block of code it's testing.
-        SQLiteDatabase db;
-        db = contactHelper.getWritableDatabase();
-        Log.i(TAG, "nuM ENTRIES: " + contactHelper.getNumberOfContacts(db));
-        //todo - end of block of code to remove.
     }
 
     /**
@@ -305,7 +295,6 @@ public class CreateContactActivity extends AppCompatActivity {
         cv.put(ContactBookDatabaseContract.PersonTable.M_NAME, contact.getPerson().getLastName());
 
         Uri uri = mContentProvider.insert(ContactBookDatabaseContract.PersonTable.PERSON_CONTENT_URI, cv);
-        Log.i(TAG, "Persy URI: " + uri.toString());
         return parseLong(uri.getLastPathSegment());
     }
 

@@ -3,12 +3,9 @@ package ca.bc.northvan.armintoussi.contactbook.Database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
-import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 
 import static ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract.*;
 
@@ -93,15 +90,6 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(ContactTable.DELETE_CONTACT_TABLE);
         onCreate(db);
-    }
-
-    //TODO delete this code, it's just there to check that entries are actually being put in to the database.
-    public long getNumberOfContacts(final SQLiteDatabase db) {
-        final long numEntries;
-
-        numEntries = DatabaseUtils.queryNumEntries(db, ContactTable.TABLE_NAME);
-
-        return numEntries;
     }
 
     /**

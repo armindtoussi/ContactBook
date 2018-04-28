@@ -1,5 +1,6 @@
 package ca.bc.northvan.armintoussi.contactbook.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -124,7 +125,7 @@ public class ContactBookRecyclerAdapter extends CursorRecyclerAdapter<ContactBoo
 
             Intent intent = new Intent(mContext, EditContactActivity.class);
             intent.putExtra("contact", mContacts.get(itemPosition).get_id());
-            mContext.startActivity(intent);
+            ((Activity)mContext).startActivityForResult(intent, 2);
         }
     }
 }

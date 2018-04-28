@@ -333,6 +333,15 @@ public class Contact {
         return mobilePhoneNumber;
     }
 
+    /**
+     * Builds a Contact from a cursor however, it is
+     * only building a contact with the Person information,
+     * the Address is omitted on purpose.
+     *
+     * @param cursor the cursor with Contact Results.
+     *
+     * @return a built Contact with person info, no address info.
+     */
     public static Contact fromCursor(Cursor cursor) {
         final long   _id   = cursor.getLong(0);
         final String fName = cursor.getString(HomeActivity.F_NAME_COL);

@@ -105,7 +105,9 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 1 && resultCode == RESULT_OK) {
             getLoaderManager().initLoader(1, null, this);
-
+        } else if (requestCode == 2 && resultCode == RESULT_OK) {
+            int id = data.getIntExtra("id", 1000);
+            getLoaderManager().initLoader(id, null, this);
         }
     }
 
@@ -151,12 +153,8 @@ public class HomeActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(mAdapter == null) {
-            mAdapter = new ContactBookRecyclerAdapter(this, data, mContactRecycler);
-            mContactRecycler.setAdapter(mAdapter);
-        } else {
-            mAdapter.swapCursor(data);
-        }
+        mAdapter = new ContactBookRecyclerAdapter(this, data, mContactRecycler);
+        mContactRecycler.setAdapter(mAdapter);
     }
 
     /**

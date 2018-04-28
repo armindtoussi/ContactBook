@@ -15,12 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabaseContract;
-import ca.bc.northvan.armintoussi.contactbook.Database.ContactContentProvider;
 import ca.bc.northvan.armintoussi.contactbook.Models.Address;
 import ca.bc.northvan.armintoussi.contactbook.Models.Contact;
 import ca.bc.northvan.armintoussi.contactbook.Models.Person;
@@ -31,6 +25,10 @@ import static ca.bc.northvan.armintoussi.contactbook.Database.ContactBookDatabas
 
 /**
  * Created By Armin Toussi: 4/26/2018
+ *
+ * Edit Contact activity. It allows the user to edit the
+ * contact's information or delete the contact entirely.
+ *
  */
 public class EditContactActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     /** Debugging class tag. */
@@ -94,14 +92,21 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
     private String middle;
     /** Last name as a String. */
     private String last;
-    /** Home mobile*/
+    /** Home phone # as a String. */
     private String home;
+    /** Mobile phone # as a String. */
     private String mobile;
+    /** Email as a String. */
     private String email;
+    /** Street Address as a String. */
     private String address;
+    /** City as a String. */
     private String city;
+    /** Region/state as a String. */
     private String region;
+    /** Country as a String. */
     private String country;
+    /** Post Code as a String. */
     private String postCode;
 
     /** Edit Contact Button. */
@@ -111,7 +116,6 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
 
     /** Contact _ID of the selected contact. */
     private long id;
-
     /** The selected Constructed Contact. */
     private Contact mContact;
 
@@ -240,7 +244,8 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
     }
 
     /**
-     *
+     * Initiates the necessary methods for updating
+     * a contact in full including address and person.
      */
     private void initUpdateEditedContact() {
         updatePerson();
@@ -312,6 +317,9 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
                 if(validateContactInformation()) {
                     getEditedContactFromView();
                     initUpdateEditedContact();
+                    Intent results = new Intent();
+                    results.putExtra("id", (int)id + 20);
+                    setResult(RESULT_OK, results);
                     finish();
                 }
             }

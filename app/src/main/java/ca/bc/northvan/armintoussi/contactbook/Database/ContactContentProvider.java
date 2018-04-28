@@ -45,7 +45,6 @@ public class ContactContentProvider extends ContentProvider {
 
     /** Add the necessary Uri's to the matcher. */
     static {
-        Log.i(TAG, "initializing this shit ?");
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(AUTHORITY,
                           PersonTable.TABLE_NAME,
@@ -67,9 +66,13 @@ public class ContactContentProvider extends ContentProvider {
                           ADDRESS_URI_ITEM_CODE);
     }
 
+    /**
+     * onCreate method instantiates a ContactBookDatabaseHelper.
+     *
+     * @return boolean.
+     */
     @Override
     public boolean onCreate() {
-        Log.i(TAG, "onCreate() is being called");
         dbHelper = ContactBookDatabaseHelper.getInstance(getContext());
         return true;
     }
@@ -84,14 +87,13 @@ public class ContactContentProvider extends ContentProvider {
     @Override
     public String getType(final Uri uri) {
         final String type;
-        Log.i(TAG, "getting type ");
+
         switch(uriMatcher.match(uri)) {
             case PERSON_URI_CODE:
                 type = PersonTable.PERSON_CONTENT_TYPE;
                 break;
             case PERSON_URI_ITEM_CODE:
                 type = PersonTable.PERSON_ITEM_TYPE;
-                Log.i(TAG, "PERSON ITEM TYPE ");
                 break;
             case ADDRSS_URI_CODE:
                 type = AddressTable.ADDRESS_CONTENT_TYPE;
@@ -126,14 +128,11 @@ public class ContactContentProvider extends ContentProvider {
     @Override
     public Cursor query(final Uri uri, final String[] projection, final String selection,
                         final String[] selectionArgs, final String sortOrder) {
-        Log.i(TAG, "$#%#%#$%Querying hopefully@#$@#%#%");
         final Cursor cursor;
         final SQLiteDatabase db;
 
-        //todo- maybe change this to sqlbuilder method of doing query.
         switch(uriMatcher.match(uri)) {
             case CONTCT_URI_CODE:
-                Log.i(TAG, "IN THE WRONG PLACE");
                 db     = dbHelper.getReadableDatabase();
                 cursor = dbHelper.getAllContactsWithPersons(this.getContext(), db);
                 break;
@@ -143,7 +142,6 @@ public class ContactContentProvider extends ContentProvider {
                 cursor     = dbHelper.getSingleFullContact(this.getContext(), db, parseLong(_id));
                 break;
             default:
-                Log.i(TAG, "DEFAULT: ");
                 throw new IllegalArgumentException("Unsupported URI: " + uri);
         }
 
@@ -184,13 +182,11 @@ public class ContactContentProvider extends ContentProvider {
 
         final int numRows;
         final SQLiteDatabase db;
-        Log.i(TAG, " TRYING TO GET MATCH ");
 
         switch(uriMatcher.match(uri)) {
             case PERSON_URI_ITEM_CODE:
                 db      = dbHelper.getWritableDatabase();
                 numRows = dbHelper.updateSinglePerson(db, parseLong(selection), values);
-                Log.i(TAG, "Num Rows Affected: " + numRows);
                 break;
             case ADDRESS_URI_ITEM_CODE:
                 db      = dbHelper.getWritableDatabase();
