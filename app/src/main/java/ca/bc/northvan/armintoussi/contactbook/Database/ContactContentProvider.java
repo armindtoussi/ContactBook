@@ -159,8 +159,23 @@ public class ContactContentProvider extends ContentProvider {
      */
     @Override
     public int delete(final Uri uri, final String selection, final String[] selectionArgs) {
-        //Todo - implement later if needed.
-        throw new UnsupportedOperationException("Delete not yet implemented");
+        if(dbHelper != null) {
+            dbHelper = ContactBookDatabaseHelper.getInstance(getContext());
+        }
+
+        final SQLiteDatabase db;
+        final int numRows;
+
+        switch(uriMatcher.match(uri)) {
+            case CONTENT_ITEM_CODE:
+                db = dbHelper.getWritableDatabase();
+                numRows = dbHelper.deleteSingleContact(db, parseLong(selection));
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported Uri: " + uri);
+        }
+
+        return numRows;
     }
 
     /**

@@ -194,4 +194,18 @@ public class ContactBookDatabaseHelper extends SQLiteOpenHelper {
     public int updateSingleContact(final SQLiteDatabase db, final long id, final ContentValues cv) {
         return db.update(ContactTable.TABLE_NAME, cv, "_id=" + id, null);
     }
+
+    /**
+     * Delets an entry in the contact table,
+     * and because of on delete cascade in the db, it'll
+     * delete the Person and Address associated with it too.
+     *
+     * @param db a dataface reference.
+     * @param id the id of the Contact to delete.
+     *
+     * @return the number of rows affected. 
+     */
+    public int deleteSingleContact(final SQLiteDatabase db, final long id) {
+        return db.delete(ContactTable.TABLE_NAME, "_id=" + id, null);
+    }
 }

@@ -313,10 +313,12 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
         mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Edit clicked", Toast.LENGTH_SHORT).show();
                 if(validateContactInformation()) {
+                    //prepare edited info.
                     getEditedContactFromView();
                     initUpdateEditedContact();
+
+                    //send things back cuz we donee.
                     Intent results = new Intent();
                     results.putExtra("id", (int)id + 20);
                     setResult(RESULT_OK, results);
@@ -329,6 +331,15 @@ public class EditContactActivity extends AppCompatActivity implements LoaderMana
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Delete clicked", Toast.LENGTH_SHORT).show();
+                getContentResolver().delete(Uri.withAppendedPath(
+                        ContactTable.CONTACT_ITEM_URI, "" + id),
+                        "" + id, null);
+
+                Intent results = new Intent();
+                results.putExtra("id", (int)id + 20);
+                setResult(RESULT_OK, results);
+                finish();
+
             }
         });
     }
